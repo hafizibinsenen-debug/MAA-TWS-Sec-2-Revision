@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ScaffoldAI Physics · Madrasah Alsagoff Al-Arabiah</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brand:#0f5b4a;--brand2:#0a4337;--gold:#c9a227;--gold2:#f3e7bf;
+  --bg:#f6f3ea;--card:#ffffff;--ink:#1c2a26;--muted:#5f6d68;--line:#e4dece;
+  --ok:#15803d;--okbg:#e9f7ee;--bad:#b42318;--badbg:#fdecea;--warn:#a15c07;--warnbg:#fff4de;
+  --thermal:#c2410c;--waves:#0e7490;--sound:#7c3aed;--accent:var(--brand);
+  --r:14px;--shadow:0 1px 2px rgba(20,40,30,.06),0 6px 20px rgba(20,40,30,.06);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:16px;line-height:1.55}
+button,input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3{line-height:1.25;margin:0 0 .5rem}
+.mono{font-family:'JetBrains Mono',monospace}
+/* top bar */
+.topbar{position:sticky;top:0;z-index:20;background:var(--brand);color:#fff;border-bottom:3px solid var(--gold)}
+.topbar .in{max-width:1100px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px}
+.crest{width:38px;height:38px;flex:none}
+.brand{display:flex;flex-direction:column;line-height:1.15;min-width:0}
+.brand b{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand small{opacity:.85;font-size:12px}
+.spacer{flex:1}
+.chip{background:rgba(255,255,255,.14);border-radius:999px;padding:5px 12px;font-size:13px;white-space:nowrap;max-width:190px;overflow:hidden;text-overflow:ellipsis}
+.tbtn{background:transparent;border:1.5px solid rgba(255,255,255,.55);color:#fff;border-radius:10px;padding:6px 12px;cursor:pointer;font-weight:600;font-size:14px}
+.tbtn:hover{background:rgba(255,255,255,.12)}
+.tbtn.gold{background:var(--gold);border-color:var(--gold);color:#1c1606}
+.banner{background:var(--warnbg);color:var(--warn);font-size:13px;text-align:center;padding:6px 12px;border-bottom:1px solid #f1dcb0}
+main{max-width:1100px;margin:0 auto;padding:20px 16px 110px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:20px}
+.grid{display:grid;gap:16px}
+.g3{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.btn{border:none;border-radius:10px;padding:10px 18px;font-weight:700;cursor:pointer;background:var(--accent);color:#fff;transition:transform .05s,opacity .15s}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
+.btn.soft{background:#eef3f1;color:var(--brand)}
+.btn.sm{padding:6px 12px;font-size:14px}
+label.f{display:block;font-weight:600;margin:12px 0 6px;font-size:14px}
+input.in,select.in,textarea.in{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff;outline:none}
+input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(15,91,74,.12)}
+textarea.in{min-height:110px;resize:vertical}
+.pill{display:inline-block;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700;background:#eef3f1;color:var(--brand)}
+.tag{display:inline-block;border-radius:6px;padding:2px 8px;font-size:12px;font-weight:600;background:#f2efe6;color:var(--muted);margin:2px 4px 2px 0}
+.err{color:var(--bad);font-size:14px;margin-top:8px}
+/* login */
+.login{max-width:900px;margin:24px auto;display:grid;grid-template-columns:1.1fr 1fr;gap:20px}
+@media(max-width:780px){.login{grid-template-columns:1fr}}
+.hero{background:linear-gradient(150deg,var(--brand) 0%,var(--brand2) 100%);color:#fff;border-radius:var(--r);padding:28px;position:relative;overflow:hidden}
+.hero h1{font-size:28px}
+.hero .bism{font-size:13px;color:var(--gold2);letter-spacing:.3px;margin-bottom:14px}
+.hero ul{padding-left:18px;margin:12px 0 0}
+.hero li{margin:6px 0}
+.tabs{display:flex;gap:6px;background:#eef1ec;padding:4px;border-radius:12px;margin-bottom:6px}
+.tabs button{flex:1;border:none;background:transparent;padding:8px;border-radius:9px;font-weight:700;cursor:pointer;color:var(--muted)}
+.tabs button.on{background:#fff;color:var(--brand);box-shadow:var(--shadow)}
+/* topic cards */
+.tcard{border-top:5px solid var(--c);display:flex;flex-direction:column;gap:10px}
+.tcard h3{color:var(--c)}
+.bar{height:8px;background:#efebdf;border-radius:99px;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--c,var(--brand));border-radius:99px}
+/* flow */
+.stephead{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
+.stephead h2{margin:0;color:var(--accent)}
+.dots{display:flex;flex-wrap:wrap;gap:5px;margin:0 0 16px}
+.dot{min-width:30px;height:26px;padding:0 6px;border-radius:7px;border:1.5px solid var(--line);background:#fff;font-size:11px;font-weight:700;color:var(--muted);cursor:pointer}
+.dot.cur{border-color:var(--accent);color:var(--accent);box-shadow:0 0 0 2px rgba(0,0,0,.04)}
+.dot.done{background:var(--accent);border-color:var(--accent);color:#fff}
+.dot.part{background:var(--warnbg);border-color:#e9c27a;color:var(--warn)}
+.dot.lock{opacity:.4;cursor:not-allowed}
+.phase{display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:13px;letter-spacing:.4px;text-transform:uppercase;color:var(--accent)}
+.scenario{background:linear-gradient(0deg,#fff,#fbfaf6);border-left:5px solid var(--accent);padding:16px 18px;border-radius:10px;margin:12px 0}
+.idea{display:flex;gap:8px;align-items:flex-start;margin:8px 0}
+.idea span{flex:none;width:28px;height:28px;border-radius:8px;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;margin-top:6px}
+.idea textarea{min-height:70px}
+.note{background:var(--gold2);border-radius:10px;padding:10px 14px;font-size:14px;margin:12px 0}
+.okbox{background:var(--okbg);border:1px solid #bfe3cb;color:#14532d;border-radius:10px;padding:12px 14px;margin-top:12px}
+.badbox{background:var(--badbg);border:1px solid #f4c7c1;color:#7a1a12;border-radius:10px;padding:12px 14px;margin-top:12px}
+.infobox{background:#eef5fb;border:1px solid #cfe1f1;color:#173b57;border-radius:10px;padding:12px 14px;margin-top:12px}
+/* question */
+.stem{font-size:19px;font-weight:700;margin:6px 0 14px}
+.opts{display:grid;gap:10px}
+.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:12px 14px;cursor:pointer;width:100%}
+.opt b{flex:none;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;background:#f2efe6}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt.sel{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,0,0,.05)}
+.opt.sel b{background:var(--accent);color:#fff}
+.opt.wrong{border-color:#efb3ab;background:var(--badbg);opacity:.8}
+.opt.wrong b{background:var(--bad);color:#fff}
+.opt.right{border-color:#9fd5b2;background:var(--okbg)}
+.opt.right b{background:var(--ok);color:#fff}
+.opt:disabled{cursor:default}
+.conf{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:16px 0 4px}
+.conf button{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;cursor:pointer;font-weight:600;font-size:14px}
+.conf button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.hints{margin-top:16px;border-top:1px dashed var(--line);padding-top:14px}
+.hint{background:#fffaf0;border:1px solid #f0e2bb;border-radius:10px;padding:10px 14px;margin-top:8px;font-size:15px}
+.hint b{color:var(--warn)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+/* flow nav */
+.flownav{position:fixed;left:0;right:0;bottom:0;z-index:15;background:rgba(255,255,255,.96);backdrop-filter:blur(6px);border-top:1px solid var(--line)}
+.flownav .in{max-width:1100px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px}
+.flownav .mid{flex:1;text-align:center;font-size:13px;color:var(--muted)}
+.prog{height:5px;background:#eee8d8;border-radius:99px;overflow:hidden;margin-top:4px}
+.prog i{display:block;height:100%;background:var(--accent)}
+/* sims */
+.sim{width:100%;height:320px;display:block;background:#fcfbf7;border:1px solid var(--line);border-radius:12px}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-top:12px}
+.controls label{font-size:13px;font-weight:600;display:block}
+.controls input[type=range]{width:100%;accent-color:var(--accent)}
+.readout{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.readout span{background:#f2efe6;border-radius:8px;padding:5px 10px;font-size:14px}
+/* tables */
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);background:#faf8f2;position:sticky;top:0}
+.tablewrap{overflow:auto;max-height:560px;border:1px solid var(--line);border-radius:12px}
+.cmp td:first-child{color:var(--bad)}
+.cmp td:last-child{color:var(--ok)}
+.formula{font-family:'JetBrains Mono',monospace;background:#f2efe6;border-radius:8px;padding:2px 8px;font-weight:600}
+/* dashboard */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:14px 0}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px}
+.kpi b{display:block;font-size:26px;color:var(--brand)}
+.kpi span{font-size:13px;color:var(--muted)}
+.dtabs{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 14px}
+.dtabs button{border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:7px 14px;font-weight:700;cursor:pointer;color:var(--muted)}
+.dtabs button.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+.qbar{display:grid;grid-template-columns:52px 1fr 64px 64px 60px;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid #f0ece2;font-size:14px}
+.qbar .track{height:14px;background:#efebdf;border-radius:6px;overflow:hidden}
+.qbar .track i{display:block;height:100%}
+.pct{font-weight:700}
+.lo{color:var(--bad)}.mid{color:var(--warn)}.hi{color:var(--ok)}
+.modal{position:fixed;inset:0;background:rgba(10,20,15,.45);z-index:50;display:flex;align-items:flex-start;justify-content:center;padding:30px 12px;overflow:auto}
+.modal .card{max-width:900px;width:100%}
+.ideacard{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff}
+.ideacard pre{white-space:pre-wrap;font-family:inherit;margin:6px 0 0;font-size:14px}
+.spin{display:inline-block;width:16px;height:16px;border:2.5px solid rgba(0,0,0,.15);border-top-color:var(--accent);border-radius:50%;animation:sp 0.8s linear infinite;vertical-align:-3px}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media(max-width:600px){.brand small{display:none}.chip{display:none}.stem{font-size:17px}.qbar{grid-template-columns:40px 1fr 52px 52px}.qbar .hcol{display:none}}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="in">
+  <svg class="crest" viewBox="0 0 40 40" aria-hidden="true"><g transform="translate(20 20)"><rect x="-12" y="-12" width="24" height="24" fill="#c9a227"/><rect x="-12" y="-12" width="24" height="24" fill="#c9a227" transform="rotate(45)"/><circle r="8.5" fill="#0f5b4a"/><path d="M-3-4 A5 5 0 1 0 3 3 A4 4 0 1 1 -3 -4Z" fill="#f3e7bf"/></g></svg>
+  <div class="brand"><b>Madrasah Alsagoff Al-Arabiah</b><small>ScaffoldAI Physics · Thermal, Waves &amp; Sound · Kahfi Academy</small></div>
+  <div class="spacer"></div>
+  <span id="userChip" class="chip" hidden></span>
+  <button id="homeBtn" class="tbtn" hidden>Home</button>
+  <button id="logoutBtn" class="tbtn gold" hidden>Logout</button>
+</div></header>
+<div id="banner" class="banner" hidden></div>
+<main id="app"></main>
+<nav id="flownav" class="flownav" hidden><div class="in">
+  <button id="prevBtn" class="btn ghost">&larr; Previous</button>
+  <div class="mid"><div id="navLabel"></div><div class="prog"><i id="navProg"></i></div></div>
+  <button id="nextBtn" class="btn">Next &rarr;</button>
+</div></nav>
+<div id="modalRoot"></div>
+
+<script>
+/* =====================================================================
+   CONFIG
+   Leave BACKEND_URL empty when this page is served by code.gs (Apps Script).
+   If you host this file elsewhere (e.g. GitHub Pages), paste your Apps Script
+   web-app /exec URL here. With neither, the app runs in preview mode and
+   saves data in this browser only.
+   ===================================================================== */
+const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbyG6nR6-6t74XNPYqUx7YZVI6rkoKPbzbbUBpyzTTlKXY_ru2MSBxdXKSqbMsR0i4zU/exec';
+const PREVIEW_PASSWORD = 'kahfi2026';
+const HINT_UNLOCK_SEC = 45;
+const CLASSES = ['2A','2B','2C','2D','2E'];
+
+/* =====================================================================
+   CONTENT: Productive Failure units + assessment banks
+   ===================================================================== */
+const TOPICS = {
+thermal:{
+  name:'Thermal Equilibrium & Heat Transfer', short:'Thermal', color:'var(--thermal)', icon:'🔥',
+  ref:'Chapter 9 Thermal Processes',
+  gen:{
+    title:'The Kopitiam Puzzle',
+    scenario:`<p>It is a 30 °C afternoon at a kopitiam. Three friends sit at a table:</p>
+      <ul><li><b>Aisyah</b> orders teh-O at <b>80 °C</b> but gets busy talking.</li>
+      <li><b>Bilal</b> orders iced kopi at <b>10 °C</b> (with ice cubes).</li>
+      <li><b>Hana</b> has a bottle of water that has been on the table <b>all morning</b>.</li></ul>
+      <p>While waiting, Bilal touches the <b>metal</b> table leg and the <b>wooden</b> chair. The metal feels much colder.</p>`,
+    task:`<b>Your challenge:</b> (a) Predict the temperature of each drink after 2 hours and describe how it changes. (b) Explain why the metal feels colder than the wood. Generate <b>as many different explanations as you can</b>, even ones you are unsure about. There is no penalty for wrong ideas here.`
+  },
+  explore:{
+    intro:'Use the simulation to test your predictions. Change the starting temperature, the room temperature and the cup material, then press Play.',
+    probes:['Set the drink BELOW room temperature. Which way does energy flow now? Does "cold" move anywhere?','Does the drink ever cool below the room temperature? What happens to the arrows when the temperatures match?','Which cup material reaches equilibrium fastest? What does that tell you about the metal table leg?']
+  },
+  consol:{
+    key:[
+      'Energy is transferred <b>by heating from a region of higher temperature to a region of lower temperature</b>.',
+      'Transfer continues until <b>thermal equilibrium</b>: both regions are at the <b>same temperature</b> and there is <b>no net energy transfer</b>.',
+      'All three drinks end at about <b>30 °C</b>. The bottled water was already in thermal equilibrium, so it did not change.',
+      'The metal leg and wooden chair are at the <b>same temperature</b>. Metal is a <b>better conductor</b>, so it transfers energy away from your warm hand faster, making it <i>feel</i> colder.',
+      '<b>Conduction</b>: vibrating particles pass energy to neighbours; in metals, fast <b>free electrons</b> also carry energy. Needs a medium.',
+      '<b>Convection</b>: heated fluid expands, becomes <b>less dense</b> and rises; denser fluid sinks, forming <b>convection currents</b>. Only in fluids.',
+      '<b>Radiation</b>: energy transfer by <b>electromagnetic waves</b>; needs <b>no medium</b>. Rate depends on <b>surface temperature, surface area, colour and texture</b> (dull black = good emitter and absorber; shiny silver = poor).'
+    ],
+    cmp:[
+      ['"Cold moves from the ice into the kopi."','Energy moves from the warmer air into the colder kopi. "Cold" is not a thing that flows.'],
+      ['"The metal is colder than the wood."','Both are at room temperature. Metal conducts energy away from your hand faster.'],
+      ['"The tea keeps cooling until it is cold."','The tea stops changing at room temperature (thermal equilibrium).'],
+      ['"Heat rises."','Warm fluid rises because it is less dense than the cooler fluid around it.']
+    ],
+    formulas:['hotter → colder (by heating)','equilibrium: same temperature, no net transfer']
+  },
+  mcq:[
+    {id:'T1',s:'Two objects are in thermal equilibrium. Which statement must be true?',
+     o:['They contain the same amount of internal energy.','They are at the same temperature, so there is no net energy transfer between them.','They are both at 0 °C.','"Cold" has stopped flowing between them.'],a:1,
+     ex:'Thermal equilibrium means the objects are at the same temperature with no NET energy transfer. Their internal energy can still differ (a bucket and a cup of water at 30 °C hold very different amounts).',
+     mis:{0:'Internal energy also depends on mass and material. A bathtub and a cup of water at 30 °C do not hold the same energy. What is actually equal at equilibrium?',2:'Equilibrium can happen at any temperature. Hana\'s water reached it at 30 °C. What must the two objects share?',3:'In physics, "cold" is not something that flows. What does flow from hotter to colder?'},
+     tag:{0:'Equates temperature with internal energy',2:'Equilibrium means freezing',3:'Cold flows (caloric idea)'},
+     h:['Recall Hana\'s bottled water that "did not change temperature".','"Equilibrium" means balance. What becomes equal between the objects, and what stops happening overall?','Look for the option that mentions BOTH equal temperature AND no net energy transfer.']},
+    {id:'T2',s:'A cup of tea at 80 °C is left in a room at 30 °C. What is the temperature of the tea after a very long time?',
+     o:['0 °C','About 30 °C','About 55 °C (halfway between 80 °C and 30 °C)','Below 30 °C, because it keeps cooling'],a:1,
+     ex:'Energy is transferred from the hotter tea to the cooler room until they reach the same temperature. The room is so large that its temperature barely changes, so the tea ends at about 30 °C.',
+     mis:{0:'Could the tea cool below the room temperature on its own? Which way would energy need to flow for that?',2:'Averaging only works when two similar-sized objects share energy. The room is huge compared with the cup. Whose temperature changes more?',3:'Once the tea reaches room temperature, is there still a temperature difference to drive energy transfer?'},
+     tag:{0:'Objects cool to 0 °C',2:'Averages temperatures regardless of size',3:'Cooling continues past equilibrium'},
+     h:['Energy transfer by heating only happens when there is a temperature difference.','When does the temperature difference between the tea and the room become zero?','The tea stops changing when it matches its surroundings.']},
+    {id:'T3',s:'A metal rod and a wooden rod have been on the same table for hours. When you hold them, the metal rod feels much colder. Why?',
+     o:['The metal rod is at a lower temperature than the wooden rod.','Metal is a better conductor, so it transfers energy away from your hand faster.','Wood produces its own heat.','Metal absorbs coldness from the air.'],a:1,
+     ex:'Both rods are in thermal equilibrium with the room, so they are at the same temperature. Metal conducts energy away from your warmer hand much faster, so your skin cools faster and the metal FEELS colder.',
+     mis:{0:'Both rods have been in the same room for hours. What do we know about objects left together for a long time?',2:'Wood is not a heat source. Think about what happens between your HAND and each rod.',3:'"Coldness" is not a substance. What actually moves between your hand and the metal?'},
+     tag:{0:'Feels colder = is colder',2:'Materials generate heat',3:'Cold flows (caloric idea)'},
+     h:['Both rods have been on the table for hours. What does that tell you about their temperatures?','Your hand is warmer than both rods. Which rod takes energy from your hand faster?','Your skin senses how fast it loses energy, not the true temperature of the rod.']},
+    {id:'T4',s:'Why are metals generally better thermal conductors than non-metals?',
+     o:['Metal atoms are much larger than other atoms.','Metals have free electrons that move quickly and carry energy to the cooler end.','Metal particles travel from the hot end to the cold end.','Metals contain tiny pockets of air.'],a:1,
+     ex:'In all solids, energy passes along as vibrating particles collide with neighbours. Metals also have free electrons, which are small and fast, so they carry energy quickly through the metal.',
+     mis:{0:'The size of atoms is not the key. What extra particles do metals have that most non-metals do not?',2:'In a solid, atoms stay in fixed positions and only vibrate. Which tiny particles CAN move freely through a metal?',3:'Trapped air actually makes materials poorer conductors (think of thermal wear).'},
+     tag:{0:'Atom size explains conduction',2:'Particles migrate in solids',3:'Air improves conduction'},
+     h:['There are two mechanisms: vibration of particles, plus one extra mechanism in metals.','Recall the Chemistry link: metallic bonding has a "sea" of what?','Small, fast-moving free electrons carry energy quickly.']},
+    {id:'T5',s:'Water in a pot is heated at the bottom. Why does the warm water rise?',
+     o:['Heat always rises.','The warm water expands, becomes less dense, and rises while cooler, denser water sinks.','Each water particle becomes lighter when heated.','The bottom of the pot pushes the water upwards.'],a:1,
+     ex:'Heated water expands, so its density decreases. The less dense warm water rises and denser cool water sinks to replace it, setting up a convection current.',
+     mis:{0:'"Heat" is energy, not a substance that floats. What property of the warm WATER changes?',2:'Heating does not change a particle\'s mass. It changes the spacing between particles. What does that do to density?',3:'The pot does not push the water. Compare the density of warm and cool water.'},
+     tag:{0:'"Heat rises"',2:'Particles get lighter when heated',3:'Mechanical push explanation'},
+     h:['What happens to the volume of a liquid when it is heated?','Same mass, larger volume: what happens to density?','Less dense fluid rises; denser fluid sinks. This forms a convection current.']},
+    {id:'T6',s:'Energy from the Sun reaches Earth through the vacuum of space mainly by:',
+     o:['Conduction','Convection','Radiation','Both conduction and convection'],a:2,
+     ex:'Radiation is energy transfer by electromagnetic waves and needs no medium, so it can cross the vacuum of space. Conduction and convection both need matter.',
+     mis:{0:'Conduction needs particles to collide. Are there particles in a vacuum?',1:'Convection needs a fluid that can flow. Is there a fluid between the Sun and Earth?',3:'Both of these need a medium. Which process does not?'},
+     tag:{0:'Conduction through vacuum',1:'Convection through vacuum',3:'All transfer needs a medium'},
+     h:['The space between the Sun and Earth is a vacuum, with almost no particles.','Which process transfers energy as electromagnetic waves?','Pick the process that does not need a medium.']},
+    {id:'T7',s:'Four identical cups each hold the same volume of water at 100 °C in the same room. Which cup cools the fastest?',
+     o:['Dull black cup with a lid','Polished silver cup with a lid','Dull black cup without a lid','Polished silver cup without a lid'],a:2,
+     ex:'A dull black surface is a good emitter of radiation, and without a lid energy is also lost by convection from the open surface. So the dull black cup without a lid cools fastest.',
+     mis:{0:'Dull black is a good choice, but a lid stops warm air above the water from rising away. What happens without a lid?',1:'Shiny silver surfaces are poor emitters. Would that speed up or slow down cooling?',3:'No lid helps cooling, but shiny silver is a poor emitter. Which surface emits radiation faster?'},
+     tag:{0:'Ignores convection at surface',1:'Shiny surfaces emit well',3:'Shiny surfaces emit well'},
+     h:['Two things change between the cups: surface colour/texture, and the lid.','Which emits radiation faster: dull black or shiny silver? What does a lid stop?','Choose the best emitter AND the cup that allows convection from the surface.']}
+  ],
+  oe:[
+    {id:'TO1',s:'An iced drink with ice cubes at 0 °C is placed in the chiller section of a fridge kept at 4 °C. Would the ice cubes still be present the next day? Explain using the idea of thermal equilibrium.',
+     rubric:[{idea:'The chiller (4 °C) is at a higher temperature than the ice (0 °C).',kw:['higher temp','warmer','hotter','higher than 0','higher than the ice'],probe:'Which is at the higher temperature: the chiller air or the ice?'},
+       {idea:'Energy is transferred from the chiller into the drink/ice, so the ice melts.',kw:['melt'],probe:'If energy goes into the ice, what happens to the ice?'},
+       {idea:'Transfer continues until thermal equilibrium at about 4 °C, so no ice remains.',kw:['equilibrium','same temperature','until it reaches 4','reach 4','reaches 4'],probe:'When does the energy transfer stop, and what will the final temperature be?'}],
+     model:'No. The chiller (4 °C) is at a higher temperature than the ice (0 °C), so energy is transferred by heating from the chiller into the drink. The ice absorbs this energy and melts. Transfer continues until the drink reaches thermal equilibrium with the chiller at about 4 °C, so no ice remains.',
+     h:['Compare the temperatures: ice at 0 °C and chiller at 4 °C. Which is higher?','Which way is energy transferred, and what does that energy do to the ice?','When does the transfer stop? What will the drink\'s final temperature be?']},
+    {id:'TO2',s:'A metal straw in a cold drink soon has water droplets on its top end. A student says: "The cold from the drink travelled up the straw and made the top cold." Do you agree? Explain.',
+     rubric:[{idea:'Disagree: "cold" does not travel; it is energy that is transferred.',kw:['energy','cold does not','cold doesn\'t','no such thing','not cold'],probe:'Is "cold" something that can move? What actually moves when temperatures differ?'},
+       {idea:'Energy flows from the warmer top of the straw/air down to the colder drink.',kw:['warm&cold','higher&lower','from the top','into the drink','to the drink','towards the drink','hotter&colder'],probe:'Which part is warmer, and which way does energy flow?'},
+       {idea:'Metal is a good conductor, so the top loses energy quickly and its temperature drops.',kw:['conductor','conduction','free electron'],probe:'Why does a METAL straw lose energy so quickly?'}],
+     model:'I disagree. "Cold" is not something that travels. The top of the straw is warmer than the drink, so energy is transferred by conduction from the top of the straw down into the cold drink. Metal is a good conductor (free electrons), so the top loses energy quickly and its temperature drops, causing water vapour to condense on it.',
+     h:['Is "cold" a thing that can move? What actually moves when temperatures are different?','Which is warmer: the top of the straw or the drink? Which way does energy go?','Metal is a good conductor. How does that help energy leave the top of the straw quickly?']},
+    {id:'TO3',s:'Explain how a double-glazed window (two glass panes with a thin layer of trapped air) reduces energy transfer between a room and the outside.',
+     rubric:[{idea:'Air is a poor conductor (insulator).',kw:['poor conductor','insulator','bad conductor','air&poor'],probe:'Is air a good or poor thermal conductor?'},
+       {idea:'The air is trapped, so convection currents cannot form.',kw:['convection','cannot move','can\'t move','cannot flow','does not move'],probe:'Air usually moves in convection currents. Can trapped air in a thin gap do that?'},
+       {idea:'So less energy is transferred by conduction through the window.',kw:['reduce','less energy','slow','lower rate'],probe:'Put it together: what happens to the rate of energy transfer through the window?'}],
+     model:'Air is a poor thermal conductor. Because the air is trapped in a thin gap, it cannot form convection currents. So energy transfer by conduction through the window is greatly reduced, keeping the room cool in hot weather and warm in cold weather.',
+     h:['Is air a good or poor thermal conductor?','Air normally moves in convection currents. Can trapped air in a thin gap move much?','Combine: poor conductor + no convection gives what rate of energy transfer?']},
+    {id:'TO4',s:'The heating element of an electric kettle is at the bottom. Explain how the element heats ALL the water, not just the water at the bottom.',
+     rubric:[{idea:'Water near the element is heated and expands.',kw:['expand'],probe:'What happens to the volume of the water near the element when it is heated?'},
+       {idea:'It becomes less dense and rises.',kw:['less dense','lower density','density decrease','rise'],probe:'Same mass, bigger volume: does the warm water rise or sink?'},
+       {idea:'Cooler, denser water sinks to take its place, forming a convection current.',kw:['sink','convection current','denser'],probe:'What happens to the cooler water at the top, and what is this cycle called?'}],
+     model:'Water near the element is heated and expands, so its density decreases. The warmer, less dense water rises while the cooler, denser water at the top sinks to replace it and is heated in turn. This sets up a convection current that heats all the water.',
+     h:['What happens to the volume of water when it is heated by the element?','Same mass, bigger volume: what happens to density? Does it rise or sink?','Describe the loop: warm water rises, cooler water ... and the cycle is called a ...']},
+    {id:'TO5',s:'Car radiators have cooling fins painted dull black, while firefighting suits have a shiny silver surface. Explain both design choices in terms of radiation.',
+     rubric:[{idea:'Dull black is a good emitter, so the radiator loses energy faster.',kw:['good emitter','emit','emits','emission'],probe:'Is dull black a good or poor emitter of radiation?'},
+       {idea:'Fins increase the surface area, increasing the rate of energy loss.',kw:['surface area','larger area','bigger area','more area'],probe:'What do the fins do to the radiator\'s surface area?'},
+       {idea:'Shiny silver is a poor absorber / good reflector, protecting the firefighter.',kw:['reflect','poor absorber','absorb less','absorbs less','less absorb'],probe:'Is shiny silver a good or poor absorber of radiation?'}],
+     model:'Dull black surfaces are good emitters of radiation, and the fins give a larger surface area, so the radiator loses energy to the surroundings quickly. Shiny silver surfaces are poor absorbers (good reflectors) of radiation, so the suit absorbs less radiation from the fire and protects the firefighter.',
+     h:['Is dull black a good or poor emitter? Is shiny silver a good or poor absorber?','What do fins do to the surface area of the radiator?','Radiator: wants to lose energy fast. Firefighter: wants to absorb as little radiation as possible.']}
+  ]
+},
+waves:{
+  name:'General Wave Properties', short:'Waves', color:'var(--waves)', icon:'🌊',
+  ref:'Chapter 11 General Wave Properties I',
+  gen:{
+    title:'The Leaf and the Rope',
+    scenario:`<p><b>Part A.</b> A stone is dropped into a still pond. A small leaf floats 2 m away. Ripples pass the leaf for a whole minute.</p>
+      <p><b>Part B.</b> Your friend is on a voice call and cannot see your screen. You are watching two rope waves: <b>Rope 1</b> has tall, slow, widely spaced waves. <b>Rope 2</b> has short, fast, tightly packed waves.</p>`,
+    task:`<b>Your challenge:</b> (a) Where is the leaf after one minute? What did the ripples actually carry? (b) Invent a way to describe both rope waves using <b>numbers and words only</b> so precisely that your friend could recreate them. Invent your own quantities and units. Generate <b>as many ideas as you can</b>.`
+  },
+  explore:{
+    intro:'Use the rope simulation. Watch the red bead, change the frequency and amplitude, switch ropes, and freeze the wave to measure it.',
+    probes:['Watch the red bead. Does it travel along the rope with the wave? What does that tell you about what a wave carries?','Double the frequency on the same rope. What happens to the wavelength? Does the wave speed change?','Switch to the heavy rope at the same frequency. Which quantity changes and which stays the same?']
+  },
+  consol:{
+    key:[
+      'A <b>wave</b> is a disturbance that propagates through space, <b>transferring energy but not matter</b>. The leaf only bobs up and down.',
+      '<b>Transverse</b>: vibration is <b>perpendicular</b> to wave travel (light, rope). <b>Longitudinal</b>: vibration is <b>parallel</b> to wave travel (sound, slinky).',
+      '<b>Amplitude A</b>: maximum displacement from the rest position.',
+      '<b>Wavelength λ</b>: shortest distance between two successive crests (or troughs), i.e. points in phase. Unit: m.',
+      '<b>Period T</b>: time for one complete oscillation (s). <b>Frequency f</b>: oscillations per second (Hz). <span class="formula">f = 1/T</span>',
+      '<b>Wave speed</b> <span class="formula">v = fλ</span>. Speed is set by the <b>medium</b>; frequency is set by the <b>source</b>. In a new medium, <b>f stays the same</b>, so λ changes with v.',
+      'A <b>wavefront</b> is an imaginary line joining adjacent points in phase. Displacement–<b>distance</b> graph: snapshot at one instant (read λ). Displacement–<b>time</b> graph: one point over time (read T).'
+    ],
+    cmp:[
+      ['"The leaf is carried to the edge of the pond."','The leaf bobs up and down. Waves carry energy, not matter.'],
+      ['"Shaking faster makes the wave travel faster."','On the same rope v is fixed; higher f gives a shorter λ.'],
+      ['"A bigger wave is a faster wave."','Height is amplitude. Speed depends on the medium.'],
+      ['"Wavelength is from a crest to a trough."','Crest to the NEXT crest (successive crests). Crest to trough is half a wavelength.']
+    ],
+    formulas:['v = fλ','f = 1/T','v = λ/T']
+  },
+  mcq:[
+    {id:'W1',s:'A small leaf floats on a pond as ripples pass it. Which best describes the motion of the leaf?',
+     o:['It is carried along with the ripples to the edge of the pond.','It moves up and down about the same position.','It stays perfectly still.','It moves towards the source of the ripples.'],a:1,
+     ex:'Waves transfer energy, not matter. The water (and leaf) oscillate about their rest positions while the disturbance moves outward.',
+     mis:{0:'If waves carried matter, the whole pond would pile up at the edge. What does a wave actually transfer?',2:'The leaf does receive energy from the wave. How would that energy show up as motion?',3:'Nothing pushes the leaf back towards the source. Think about the motion of each bit of water.'},
+     tag:{0:'Waves carry matter',2:'Medium does not move',3:'Waves pull matter to source'},
+     h:['Think about the red bead in the rope simulation.','A wave transfers energy. Does it transfer the medium itself?','Each part of the medium oscillates about a fixed position.']},
+    {id:'W2',s:'Which of the following is a longitudinal wave?',
+     o:['Light','A wave on a plucked guitar string','Sound travelling in air','A wave on a rope shaken up and down'],a:2,
+     ex:'In sound, air particles vibrate back and forth parallel to the direction the wave travels, so sound is longitudinal. The others are transverse.',
+     mis:{0:'Light is an electromagnetic wave whose fields vary perpendicular to its travel. Which example has vibrations along the travel direction?',1:'A guitar string vibrates sideways while the wave moves along it. Is that parallel or perpendicular?',3:'Up-and-down vibration with the wave moving sideways is perpendicular. Which wave has back-and-forth vibration along its path?'},
+     tag:{0:'Light is longitudinal',1:'String waves are longitudinal',3:'Rope waves are longitudinal'},
+     h:['Longitudinal means vibration is PARALLEL to the direction of travel.','Think of a slinky being pushed and pulled.','Which example involves compressions and rarefactions?']},
+    {id:'W3',s:'The amplitude of a wave is:',
+     o:['the distance between a crest and a trough','the maximum displacement from the rest position','the distance between two successive crests','the number of waves produced per second'],a:1,
+     ex:'Amplitude is the maximum magnitude of displacement from the rest position, e.g. from the rest line to a crest.',
+     mis:{0:'Crest to trough is twice the amplitude. Where should you measure from?',2:'That distance is the wavelength. Amplitude is measured vertically, from where?',3:'That is the frequency. Amplitude describes the size of the vibration.'},
+     tag:{0:'Amplitude = crest-to-trough',2:'Confuses amplitude with wavelength',3:'Confuses amplitude with frequency'},
+     h:['Amplitude tells you the SIZE of the vibration.','Measure it from the dotted rest line, not from a trough.','Maximum displacement from the rest position.']},
+    {id:'W4',s:'A wave has a frequency of 5.0 Hz and a wavelength of 2.0 m. What is its speed?',
+     o:['0.40 m/s','2.5 m/s','7.0 m/s','10 m/s'],a:3,
+     ex:'v = fλ = 5.0 × 2.0 = 10 m/s.',
+     mis:{0:'You divided λ by f. Check the formula linking v, f and λ.',1:'You divided f by λ. Which operation does v = fλ use?',2:'You added the values. Look again at v = fλ.'},
+     tag:{0:'Formula rearranged wrongly',1:'Formula rearranged wrongly',2:'Adds instead of multiplies'},
+     h:['Which equation links speed, frequency and wavelength?','v = f × λ','Multiply 5.0 by 2.0.']},
+    {id:'W5',s:'A wave generator produces 4 complete waves every second. What is the period of the wave?',
+     o:['4 s','0.25 s','0.4 s','40 s'],a:1,
+     ex:'f = 4 Hz, so T = 1/f = 1/4 = 0.25 s.',
+     mis:{0:'4 is the frequency (waves per second). Period is time PER wave.',2:'Check your division: 1 ÷ 4 = ?',3:'Period is the time for ONE wave. If 4 waves take 1 s, one wave takes less than 1 s.'},
+     tag:{0:'Confuses period with frequency',2:'Calculation slip',3:'Inverts period'},
+     h:['4 waves per second is the frequency.','T = 1/f','1 ÷ 4']},
+    {id:'W6',s:'On the same rope, a student doubles the frequency of the vibrator. What happens to the wave?',
+     o:['Speed doubles; wavelength stays the same.','Speed stays the same; wavelength halves.','Speed and wavelength both double.','Speed stays the same; wavelength doubles.'],a:1,
+     ex:'Wave speed depends on the medium (the rope), so v stays the same. From v = fλ, doubling f halves λ.',
+     mis:{0:'The rope has not changed. What sets the speed of a wave?',2:'If both doubled, v = fλ would not hold. Which quantity is fixed by the rope?',3:'With v fixed, if f goes up, λ must go...?'},
+     tag:{0:'Frequency changes wave speed',2:'Frequency changes wave speed',3:'Inverse relationship reversed'},
+     h:['Recall the Helpful Note: what determines wave speed?','The rope is the same, so v is fixed. Use v = fλ.','If f doubles and v is constant, λ must halve.']},
+    {id:'W7',s:'A wave passes from a light rope into a heavier rope where it travels more slowly. Which quantity stays the same?',
+     o:['Speed','Wavelength','Frequency','All of them'],a:2,
+     ex:'At the join, each oscillation of the first rope drives the second rope, so the frequency is unchanged. Speed decreases, so wavelength decreases.',
+     mis:{0:'The question says the wave travels more slowly in the heavy rope.',1:'If speed changes and v = fλ, wavelength must change too unless...',3:'The question already tells you one quantity changes.'},
+     tag:{0:'Speed constant across media',1:'Wavelength constant across media',3:'Nothing changes across media'},
+     h:['Think about point J where the two ropes join.','The second rope is shaken by the first rope, once per oscillation.','Frequency is set by the source.']}
+  ],
+  oe:[
+    {id:'WO1',s:'For each oscillation, a wave advances 15 m in 3 s. Find (a) the wavelength, (b) the speed of the wave, and (c) the frequency. Show your working.',
+     rubric:[{idea:'λ = 15 m (one oscillation advances one wavelength).',kw:['15 m','15m','= 15','is 15'],probe:'How far does a wave move forward during ONE oscillation?'},
+       {idea:'v = 15 ÷ 3 = 5 m/s.',kw:['5 m/s','5m/s','5 ms','5.0 m/s','= 5 '],probe:'Speed = distance ÷ time. What do you get?'},
+       {idea:'f = v/λ = 1/3 ≈ 0.33 Hz.',kw:['0.33','1/3','0.333'],probe:'Use f = v ÷ λ, or f = 1/T with T = 3 s.'}],
+     model:'(a) In one oscillation the wave advances one wavelength, so λ = 15 m. (b) v = 15 m ÷ 3 s = 5 m/s. (c) f = v/λ = 5 ÷ 15 = 0.33 Hz (or f = 1/T = 1/3 Hz).',
+     h:['"For each oscillation" the wave moves forward one ...?','Speed = distance ÷ time.','Use v = fλ, so f = v ÷ λ (or f = 1/T with T = 3 s).']},
+    {id:'WO2',s:'Describe the difference between a transverse wave and a longitudinal wave. Give one example of each.',
+     rubric:[{idea:'Transverse: vibration perpendicular to direction of travel.',kw:['perpendicular','right angle','90'],probe:'In a transverse wave, how is the vibration direction related to the travel direction?'},
+       {idea:'Longitudinal: vibration parallel to direction of travel.',kw:['parallel','same direction','along the direction','back and forth'],probe:'In a longitudinal wave, how is the vibration direction related to the travel direction?'},
+       {idea:'Correct examples of both (e.g. light/rope and sound/slinky).',kw:['light&sound','rope&sound','rope&slinky','rope&spring','light&slinky','light&spring','guitar&sound','string&sound','water&sound'],probe:'Give one example of EACH type of wave.'}],
+     model:'In a transverse wave the particles vibrate perpendicular to the direction the wave travels, e.g. light or a wave on a rope. In a longitudinal wave the particles vibrate parallel to the direction of travel, e.g. sound in air or compressions on a slinky.',
+     h:['Compare the direction particles vibrate with the direction the wave travels.','Perpendicular means at right angles; parallel means along the same line.','Give one example of each: think rope, slinky, light, sound.']},
+    {id:'WO3',s:'Ocean waves slow down as they move into shallower water near the shore. Using v = fλ, explain what happens to the frequency and the wavelength of the waves.',
+     rubric:[{idea:'Frequency stays the same (set by the source).',kw:['frequency&same','frequency&unchanged','frequency&constant','frequency&not change','frequency&does not','f&constant','f stays','frequency remains','frequency stays'],probe:'Which quantity is set by the source and does not change when a wave enters a new medium?'},
+       {idea:'Speed decreases.',kw:['speed&decrease','slower','slows','speed&less','speed&lower','v decreases'],probe:'What does the question tell you about the speed?'},
+       {idea:'So wavelength decreases.',kw:['wavelength&decrease','wavelength&shorter','wavelength&smaller','wavelength&less','λ&decrease','wavelength&reduce'],probe:'If f is constant and v decreases, what must happen to λ?'}],
+     model:'The frequency stays the same because it is set by the source. The speed decreases in shallower water. Since v = fλ and f is constant, the wavelength must decrease, so the waves bunch up as they approach the shore.',
+     h:['Which quantity is set by the source and does not change in a new medium?','The question says the speed ... as the water gets shallower.','Rearrange v = fλ: if f stays the same and v decreases, λ must ...']},
+    {id:'WO4',s:'Explain the difference between a displacement–distance graph and a displacement–time graph of a wave. Which quantity can you read directly from each?',
+     rubric:[{idea:'Displacement–distance: shows all points at ONE instant (a snapshot).',kw:['instant','snapshot','all points','all the particles','one moment','single moment','at one time','photo'],probe:'Which graph is like a photograph of the whole wave?'},
+       {idea:'Displacement–time: shows ONE point over a period of time.',kw:['one point','single point','one particle','fixed point','a point over','one position','single particle'],probe:'Which graph tracks just one point, like Bob on his float?'},
+       {idea:'Read wavelength from displacement–distance and period (hence frequency) from displacement–time.',kw:['wavelength&period'],probe:'Which quantity can you measure along a distance axis, and which along a time axis?'}],
+     model:'A displacement–distance graph shows the displacement of all points along the wave at one instant, like a snapshot, so you can read the wavelength (and amplitude). A displacement–time graph shows how the displacement of one point changes over time, so you can read the period (and hence f = 1/T) and the amplitude.',
+     h:['One graph is like a photograph of the whole rope; the other tracks one point, like Bob on the float.','Which graph has distance on the x-axis, and which has time?','Distance axis gives wavelength; time axis gives period (then f = 1/T).']},
+    {id:'WO5',s:'A rod is dipped in and out of water 4 times per second, making circular ripples. Consecutive wavefronts are 3 cm apart. (a) What is a wavefront? (b) What is the distance between consecutive wavefronts called? (c) Find the wave speed.',
+     rubric:[{idea:'A wavefront is an imaginary line joining adjacent points in phase (e.g. along a crest).',kw:['in phase','same phase','joining&crest','line&crest','joins&crest'],probe:'A wavefront joins points that are at the same stage of their vibration. What is that called?'},
+       {idea:'The distance is the wavelength.',kw:['wavelength'],probe:'The distance from one crest to the next has a special name.'},
+       {idea:'v = fλ = 4 × 3 = 12 cm/s.',kw:['12 cm','0.12','12cm'],probe:'Use v = fλ with f = 4 Hz and λ = 3 cm.'}],
+     model:'(a) A wavefront is an imaginary line joining all adjacent points that are in phase, such as all points along one crest. (b) The wavelength. (c) v = fλ = 4 Hz × 3 cm = 12 cm/s (0.12 m/s).',
+     h:['A wavefront joins points at the same stage of their vibration, e.g. all along one crest.','The distance from one crest to the next crest has a special name.','Speed = frequency × wavelength = 4 Hz × 3 cm.']}
+  ]
+},
+sound:{
+  name:'Sound', short:'Sound', color:'var(--sound)', icon:'🔊',
+  ref:'Sound slides (Sec 2)',
+  gen:{
+    title:'The Silent Speaker & the Echo Wall',
+    scenario:`<p><b>Part A.</b> A phone playing nasheed is sealed inside a glass jar. A pump slowly removes the air from the jar.</p>
+      <p><b>Part B.</b> Yusuf claps once, facing a large wall at the edge of the school field. He hears the echo <b>0.60 s</b> later. Sound travels at <b>340 m/s</b> in air.</p>`,
+    task:`<b>Your challenge:</b> (a) Predict what you would hear as the air is removed, and invent a model of how sound gets from the phone to your ear. What moves, and how far does it move? (b) Estimate how far away the wall is. Try <b>more than one method</b> and show your working for each.`
+  },
+  explore:{
+    intro:'The simulation shows air particles in front of a speaker. Watch the red column, change frequency and amplitude, and try removing the air.',
+    probes:['Follow the red particles. Do they travel from the speaker to the ear, or vibrate about one place? Which direction do they vibrate?','Find a compression and a rarefaction. How does the pressure graph below relate to them? Is the graph a picture of the air?','Turn on "Remove air". What happens to the sound reaching the ear, and why? Now look again at your echo calculation: what distance did the sound really travel?']
+  },
+  consol:{
+    key:[
+      'Sound is produced by a <b>vibrating source</b> (guitar string, vocal folds, speaker cone).',
+      'Sound in air is a <b>longitudinal wave</b>: particles vibrate back and forth <b>parallel</b> to the direction of travel, about their own positions. The air does not flow to your ear.',
+      '<b>Compressions</b>: particles closer together, slightly higher pressure. <b>Rarefactions</b>: particles further apart, slightly lower pressure. One wavelength = compression to the next compression.',
+      'Sound <b>needs a medium</b>. A vacuum has no particles to pass on the vibration. Speed ≈ <b>340 m/s</b> in air, ≈ <b>1500 m/s</b> in water; faster in liquids and solids.',
+      '<b>Loudness ↔ amplitude</b>. <b>Pitch ↔ frequency</b>. They are independent. <span class="formula">f = 1/T</span>',
+      'A sound graph (microphone signal vs time) looks curved, but sound is <b>still longitudinal</b>; the graph is not a picture of the air.',
+      'Human hearing ≈ <b>20 Hz to 20 kHz</b>. <b>Ultrasound</b> is above 20 kHz (very high frequency, not "very loud").',
+      'An <b>echo</b> travels to the reflector AND back: <span class="formula">d = vt/2</span>. The wall in Part B is 340 × 0.60 ÷ 2 = <b>102 m</b> (not 204 m). Used in sonar, ultrasound imaging and crack detection.'
+    ],
+    cmp:[
+      ['"The air travels from the speaker to my ear."','Air particles vibrate about their positions; only the energy travels.'],
+      ['"The wall is 204 m away."','204 m is the total there-and-back path. d = vt/2 = 102 m.'],
+      ['"Louder sound means higher pitch."','Loudness depends on amplitude; pitch on frequency.'],
+      ['"Ultrasound is very loud sound."','Ultrasound has very high frequency (above 20 kHz).'],
+      ['"The sound graph shows the air moving up and down."','The graph plots signal/pressure against time; sound is longitudinal.']
+    ],
+    formulas:['d = vt/2','f = 1/T','v = fλ']
+  },
+  mcq:[
+    {id:'S1',s:'Sound in air is a longitudinal wave. This means the air particles:',
+     o:['move up and down, perpendicular to the direction of travel','vibrate back and forth, parallel to the direction of travel','travel all the way from the source to the listener','stay completely still while the energy moves'],a:1,
+     ex:'In a longitudinal wave, particles vibrate about their positions parallel to the direction of wave travel.',
+     mis:{0:'Perpendicular vibration describes a transverse wave. What does "longitudinal" mean?',2:'If air flowed from the speaker to you, you would feel a wind. What do the particles actually do?',3:'If the particles did not move, how would the vibration be passed along?'},
+     tag:{0:'Sound is transverse',2:'Air flows to the listener',3:'Medium does not move'},
+     h:['Remember the slinky pushed and pulled at one end.','Longitudinal: vibration is along the same line as the wave travel.','Particles vibrate back and forth about their own positions.']},
+    {id:'S2',s:'A compression in a sound wave is a region where the air particles are:',
+     o:['further apart, with slightly lower pressure','closer together, with slightly higher pressure','completely absent','moving at the speed of sound'],a:1,
+     ex:'When the speaker cone moves forward it pushes particles closer together, forming a compression with slightly higher pressure.',
+     mis:{0:'That describes a rarefaction. What happens when the cone pushes forward?',2:'Air particles are always present in the medium. They are just more or less crowded.',3:'Particles vibrate about their positions; the wave travels at the speed of sound.'},
+     tag:{0:'Swaps compression and rarefaction',2:'Compression = empty space',3:'Particles travel with the wave'},
+     h:['Think: a crowd of people briefly bunching together.','"Compress" means squeeze together.','Crowded particles mean slightly higher pressure.']},
+    {id:'S3',s:'A ringing bell is placed in a jar and the air is slowly pumped out. The sound fades away because:',
+     o:['the bell stops vibrating','the glass jar absorbs all the sound','there are fewer particles to pass on the vibrations','the sound waves become transverse'],a:2,
+     ex:'Sound needs a medium. With less air, there are fewer particles to pass the vibration on, and in a vacuum sound cannot travel at all.',
+     mis:{0:'You can still SEE the hammer hitting the bell. Is the bell still vibrating?',1:'With air in the jar, you could hear the bell through the glass. What changed?',3:'Sound does not change type. What does sound need in order to travel?'},
+     tag:{0:'Source stops in vacuum',1:'Container blocks sound',3:'Sound changes type'},
+     h:['What is being removed from the jar?','Sound travels by particles passing vibrations to their neighbours.','No particles, no medium, no sound.']},
+    {id:'S4',s:'Which property of a sound wave determines its pitch?',
+     o:['Amplitude','Frequency','Speed','The medium it travels in'],a:1,
+     ex:'Pitch depends on frequency: higher frequency gives higher pitch.',
+     mis:{0:'Amplitude affects loudness. A quiet whistle can still be high-pitched.',2:'All sounds in air travel at about the same speed, yet they have different pitches.',3:'Sounds of many pitches travel through the same air.'},
+     tag:{0:'Amplitude determines pitch',2:'Speed determines pitch',3:'Medium determines pitch'},
+     h:['Pitch is how high or low a sound is.','Which property counts the number of vibrations per second?','Higher frequency gives higher pitch.']},
+    {id:'S5',s:'A guitarist plucks the same string harder than before. Compared with before, the sound is:',
+     o:['louder, with the same pitch','higher in pitch, with the same loudness','louder and higher in pitch','quieter and lower in pitch'],a:0,
+     ex:'Plucking harder increases the amplitude of vibration, so the sound is louder. The same string vibrates at the same frequency, so the pitch is unchanged.',
+     mis:{1:'Plucking harder makes the string swing further. Which property does that change?',2:'Loudness and pitch are independent. The same string keeps the same frequency.',3:'More energy goes into the string, not less.'},
+     tag:{1:'Force changes pitch',2:'Loudness and pitch linked',3:'Energy reasoning reversed'},
+     h:['Plucking harder makes the string vibrate with a larger ...?','Amplitude relates to loudness; frequency relates to pitch.','Same string, same frequency.']},
+    {id:'S6',s:'A microphone signal has a period T = 0.005 s. What is the frequency of the sound?',
+     o:['0.005 Hz','5 Hz','200 Hz','500 Hz'],a:2,
+     ex:'f = 1/T = 1 ÷ 0.005 = 200 Hz, i.e. 200 vibrations every second.',
+     mis:{0:'That is the period, not the frequency. Use f = 1/T.',1:'Check the calculation: 1 ÷ 0.005 = ?',3:'Check the calculation: 1 ÷ 0.005 = ?'},
+     tag:{0:'Confuses period with frequency',1:'Calculation slip',3:'Calculation slip'},
+     h:['Frequency and period are related by f = 1/T.','Work out 1 ÷ 0.005.','0.005 s = 5 ms, so there are 1000 ÷ 5 cycles each second.']},
+    {id:'S7',s:'A student claps and hears the echo from a wall 0.60 s later. Sound travels at 340 m/s. How far away is the wall?',
+     o:['102 m','204 m','567 m','340 m'],a:0,
+     ex:'Total distance = 340 × 0.60 = 204 m for the journey there AND back. Distance to the wall = 204 ÷ 2 = 102 m.',
+     mis:{1:'204 m is the total distance travelled. Does the sound go just to the wall, or there and back?',2:'You divided speed by time. Distance = speed × time.',3:'That is the distance sound travels in 1 s, not 0.60 s.'},
+     tag:{1:'Forgets echo round trip (÷2)',2:'Divides speed by time',3:'Ignores echo time'},
+     h:['Total distance = speed × time.','The echo time includes the journey to the wall AND back.','d = vt/2']}
+  ],
+  oe:[
+    {id:'SO1',s:'Explain why sound can travel through air but not through a vacuum.',
+     rubric:[{idea:'Sound is carried by particles (of the medium) vibrating.',kw:['particle','molecule'],probe:'What in the air actually carries the sound?'},
+       {idea:'Each particle passes the vibration on to neighbouring particles.',kw:['pass','neighbour','collide','collision','next particle','transfer'],probe:'How does the vibration get from one place to the next?'},
+       {idea:'A vacuum has no particles / no medium, so the vibration cannot be passed on.',kw:['no particle','no medium','no air','empty','nothing to','no molecule'],probe:'What is missing in a vacuum?'}],
+     model:'Sound is passed on by the particles of a medium vibrating and colliding with neighbouring particles. Air has particles, so the vibration is passed along from the source to the ear. A vacuum has no particles (no medium), so the vibration cannot be passed on and sound cannot travel.',
+     h:['What does sound need in order to travel?','Think about how one vibrating air particle affects the next one.','A vacuum is empty of particles.']},
+    {id:'SO2',s:'A sound wave shown on a screen looks like a transverse wave. Explain why sound is still a longitudinal wave.',
+     rubric:[{idea:'The screen shows a GRAPH of signal/pressure against time, not a picture of the air.',kw:['graph','plot','against time','signal','not a picture','not the shape'],probe:'What are the axes of the graph on the screen? Is it a picture of the air?'},
+       {idea:'Air particles vibrate back and forth parallel to the direction of travel.',kw:['parallel','back and forth','same direction','to and fro'],probe:'In which direction do the air particles actually vibrate?'},
+       {idea:'Peaks correspond to compressions (high pressure), troughs to rarefactions (low pressure).',kw:['compression','rarefaction'],probe:'What do the high and low parts of the graph represent in the air?'}],
+     model:'The screen shows a graph of the microphone signal (related to air pressure) against time; it is not a picture of the air. The air particles actually vibrate back and forth parallel to the direction of travel. The peaks of the graph correspond to compressions (higher pressure) and the troughs to rarefactions (lower pressure).',
+     h:['Look at the axes: what is plotted against what?','Do the air particles really move up and down?','Match the high and low parts of the graph to regions in the air.']},
+    {id:'SO3',s:'A ship\'s sonar pulse returns 0.20 s after it is sent. The speed of sound in water is 1500 m/s. Calculate the depth of the sea, and explain why you divide by 2.',
+     rubric:[{idea:'Total distance = 1500 × 0.20 = 300 m.',kw:['300'],probe:'How far does the pulse travel in total in 0.20 s?'},
+       {idea:'Depth = 150 m.',kw:['150'],probe:'What is the depth after you account for the round trip?'},
+       {idea:'Divide by 2 because the pulse travels down to the seabed AND back up.',kw:['there and back','to and fro','return','both ways','twice','back up','reflect','round trip','down and up'],probe:'Why is the total distance not the same as the depth?'}],
+     model:'Total distance = v × t = 1500 × 0.20 = 300 m. The pulse travels down to the seabed and is reflected back up to the ship, so the depth is half of this: 300 ÷ 2 = 150 m.',
+     h:['Total distance = speed × time.','Where does the pulse go before the ship detects it?','d = vt/2']},
+    {id:'SO4',s:'A high-pitched whistle can be quiet, while a low-pitched drum can be loud. Use the terms amplitude and frequency to explain this.',
+     rubric:[{idea:'Pitch depends on frequency (whistle: high frequency; drum: low frequency).',kw:['pitch&frequency'],probe:'Which property sets pitch?'},
+       {idea:'Loudness depends on amplitude (whistle: small amplitude; drum: large amplitude).',kw:['loud&amplitude','quiet&amplitude'],probe:'Which property sets loudness?'},
+       {idea:'They are independent properties, so a sound can have any combination.',kw:['independent','separate','different propert','not related','does not depend','doesn\'t depend','not linked','both&whistle&drum'],probe:'Does changing frequency force the amplitude to change?'}],
+     model:'Pitch depends on frequency and loudness depends on amplitude. These are independent properties. The whistle vibrates at a high frequency but with a small amplitude, so it is high-pitched but quiet. The drum vibrates at a low frequency with a large amplitude, so it is low-pitched but loud.',
+     h:['Loud/quiet describes one property; high/low describes another.','Which one is amplitude? Which one is frequency?','Explain each instrument using both properties.']},
+    {id:'SO5',s:'Explain how ultrasound can be used to detect a hidden crack inside a metal block. Include what ultrasound is.',
+     rubric:[{idea:'Ultrasound is sound with frequency above 20 kHz (above human hearing).',kw:['20 khz','20 000','20000','20,000','above human','high frequency','higher than 20'],probe:'What makes a sound "ultrasound"?'},
+       {idea:'A pulse is reflected (echo) by the crack as well as the far side.',kw:['reflect','echo','bounce'],probe:'What happens when the pulse meets the crack?'},
+       {idea:'The crack echo returns earlier; its time gives the depth using d = vt/2.',kw:['earlier','shorter time','vt/2','depth','sooner','less time'],probe:'How is the timing of the crack echo different, and how can you use it?'}],
+     model:'Ultrasound is sound with a frequency above 20 kHz, above the range of human hearing. A short pulse is sent into the block. Part of it is reflected by the crack and the rest by the far side. The echo from the crack returns earlier, and its depth is found using depth = speed × echo time ÷ 2.',
+     h:['Ultrasound is defined by its frequency. Above what value?','A crack is a surface inside the block. What do surfaces do to sound pulses?','Compare the echo time from the crack with the echo from the far side, then use d = vt/2.']}
+  ]
+}
+};
+const TOPIC_KEYS = ['thermal','waves','sound'];
+const MAX_MCQ = 2, MAX_OE = 3;
+const topicMax = k => TOPICS[k].mcq.length*MAX_MCQ + TOPICS[k].oe.length*MAX_OE;
+const QINDEX = {}; TOPIC_KEYS.forEach(k=>{TOPICS[k].mcq.forEach((q,i)=>QINDEX[q.id]={topic:k,type:'MCQ',n:i+1,q});TOPICS[k].oe.forEach((q,i)=>QINDEX[q.id]={topic:k,type:'OE',n:i+1,q});});
+
+/* =====================================================================
+   API layer: Apps Script (google.script.run) > remote URL > preview
+   ===================================================================== */
+const hasGAS = typeof google!=='undefined' && google.script && google.script.run;
+const MODE = hasGAS ? 'gas' : (BACKEND_URL ? 'remote' : 'preview');
+const LS = {
+  get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}},
+  del(k){try{localStorage.removeItem(k)}catch(e){}}
+};
+const API = {
+  call(action,payload){
+    if(MODE==='gas') return new Promise((res,rej)=>google.script.run.withSuccessHandler(res).withFailureHandler(rej).apiCall(action,payload));
+    if(MODE==='remote'){
+      if(action==='save'){
+        fetch(BACKEND_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action,payload})}).catch(()=>{});
+        return Promise.resolve({ok:true});
+      }
+      return fetch(BACKEND_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action,payload})}).then(r=>r.json());
+    }
+    return Promise.resolve(Mock[action] ? Mock[action](payload) : {ok:false,error:'Unknown action'});
+  }
+};
+const Mock = {
+  db(){return LS.get('saf_db',{students:[],responses:[]})},
+  login(p){const d=this.db();const id=makeId(p.name,p.cls);const now=new Date().toISOString();let s=d.students.find(x=>x.StudentId===id);
+    if(s){s.LastLogin=now;s.Logins=(+s.Logins||0)+1}else d.students.push({FirstSeen:now,LastLogin:now,StudentId:id,Name:p.name,Class:p.cls,Logins:1});
+    LS.set('saf_db',d);return {ok:true,studentId:id,name:p.name,cls:p.cls,ai:false}},
+  save(r){const d=this.db();d.responses.push(Object.assign({Timestamp:new Date().toISOString()},r));LS.set('saf_db',d);return {ok:true}},
+  grade(p){return keywordGrade(p)},
+  teacherLogin(p){return {ok:p.password===PREVIEW_PASSWORD}},
+  dashboard(p){if(p.password!==PREVIEW_PASSWORD)return {ok:false,error:'Wrong password'};const d=this.db();return {ok:true,students:d.students,responses:d.responses,ai:false}}
+};
+function makeId(name,cls){return (cls+'-'+name).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}
+function matchIdea(ans,kws){return (kws||[]).some(k=>String(k).toLowerCase().split('&').every(part=>ans.indexOf(part.trim())>-1))}
+function keywordGrade(p){
+  const ans=' '+String(p.answer||'').toLowerCase()+' ';const rubric=p.rubric||[];const max=+p.max||rubric.length||3;
+  const met=[],missing=[];rubric.forEach((r,i)=>(matchIdea(ans,r.kw)?met:missing).push(i));
+  const score=Math.min(max,met.length);let fb;
+  if(score>=max) fb='Excellent. Your answer includes every key idea. Compare it with the model answer to polish your wording.';
+  else if(score===0) fb='Good start for a first attempt. '+(rubric[missing[0]]?rubric[missing[0]].probe:'');
+  else fb='You have '+score+' of '+max+' key ideas. Think further: '+rubric[missing[0]].probe;
+  return {ok:true,score,max,met,feedback:fb,misconception:'',source:'rubric'};
+}
+
+/* =====================================================================
+   STATE
+   ===================================================================== */
+const S = { user:null, role:null, topic:null, pages:[], idx:0, prog:{}, sid:Math.random().toString(36).slice(2,10), pw:'', dash:null, dtab:'overview', dclass:'all', dtopic:'all' };
+let anim=null, tick=null;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const progKey=()=>'saf_prog_'+(S.user?S.user.studentId:'x');
+function saveProg(){LS.set(progKey(),S.prog)}
+function TP(k){k=k||S.topic;if(!S.prog[k])S.prog[k]={gen:{ideas:['',''],conf:'',submitted:false},explore:'',reflect:'',mcq:{},oe:{},idx:0,finalReflect:''};return S.prog[k]}
+function mcqState(q){const p=TP();return p.mcq[q.id]||(p.mcq[q.id]={sel:null,attempts:0,tried:[],done:false,correct:false,score:0,hints:0,conf:'',t0:Date.now()})}
+function oeState(q){const p=TP();return p.oe[q.id]||(p.oe[q.id]={text:'',conf:'',subs:0,best:0,feedback:'',source:'',hints:0,done:false,showModel:false,t0:Date.now()})}
+function record(o){
+  const base={SessionId:S.sid,StudentId:S.user.studentId,Name:S.user.name,Class:S.user.cls,Topic:S.topic};
+  API.call('save',Object.assign(base,o)).catch(()=>{});
+}
+
+/* =====================================================================
+   CHROME
+   ===================================================================== */
+function setChrome(){
+  const logged=!!S.role;
+  $('#logoutBtn').hidden=!logged;
+  $('#homeBtn').hidden=!(S.role==='student');
+  $('#userChip').hidden=!logged;
+  $('#userChip').textContent=S.role==='teacher'?'Teacher':(S.user?S.user.name+' · '+S.user.cls:'');
+  const b=$('#banner');
+  if(MODE==='preview'){b.hidden=false;b.textContent='Preview mode: data is saved in this browser only. Deploy with code.gs to collect class data.';}
+  else b.hidden=true;
+}
+function stopAnim(){if(anim)cancelAnimationFrame(anim);anim=null;if(tick){clearInterval(tick);tick=null}}
+
+$('#logoutBtn').onclick=()=>{
+  if(!confirm('Log out now? Your progress on this device is saved.'))return;
+  stopAnim();S.role=null;S.user=null;S.topic=null;S.pw='';S.dash=null;LS.del('saf_session');renderLogin();
+};
+$('#homeBtn').onclick=()=>{stopAnim();S.topic=null;renderHome()};
+$('#prevBtn').onclick=()=>go(S.idx-1);
+$('#nextBtn').onclick=()=>{ if(S.idx>=S.pages.length-1){stopAnim();S.topic=null;renderHome();return;} go(S.idx+1) };
+
+/* =====================================================================
+   LOGIN
+   ===================================================================== */
+function renderLogin(tab){
+  stopAnim();S.role=null;setChrome();$('#flownav').hidden=true;
+  tab=tab||'student';
+  $('#app').innerHTML=`
+  <div class="login">
+    <div class="hero">
+      <div class="bism">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ · Begin with a good intention</div>
+      <h1>Thermal, Waves &amp; Sound</h1>
+      <p style="opacity:.92">Secondary 2 Physics, the Productive Failure way. You will <b>try first</b>, explore, then make sense of the physics, and finally check your understanding.</p>
+      <ul>
+        <li><b>Generate</b>: tackle a puzzle before being taught. Wrong ideas are welcome.</li>
+        <li><b>Explore</b>: test your ideas in a simulation.</li>
+        <li><b>Consolidate</b>: compare your ideas with the physics.</li>
+        <li><b>Assess</b>: 7 MCQs and 5 open-ended questions per topic, with 3-step hints.</li>
+      </ul>
+      <p class="small" style="opacity:.85;margin-top:14px">Adab in learning: try honestly, check evidence before concluding (tabayyun), and use hints with integrity (amanah).</p>
+    </div>
+    <div class="card">
+      <div class="tabs"><button id="tS" class="${tab==='student'?'on':''}">Student</button><button id="tT" class="${tab==='teacher'?'on':''}">Teacher</button></div>
+      ${tab==='student'?`
+        <label class="f" for="nm">Full name</label>
+        <input id="nm" class="in" autocomplete="name" placeholder="e.g. Nur Aisyah binte Ahmad">
+        <label class="f" for="cl">Class</label>
+        <input id="cl" class="in" list="cls" placeholder="e.g. 2A">
+        <datalist id="cls">${CLASSES.map(c=>`<option value="${c}">`).join('')}</datalist>
+        <div class="row" style="margin-top:18px"><button id="goS" class="btn" style="flex:1">Start learning</button></div>
+      `:`
+        <label class="f" for="pw">Teacher password</label>
+        <input id="pw" type="password" class="in" placeholder="Password">
+        <div class="row" style="margin-top:18px"><button id="goT" class="btn" style="flex:1">Open dashboard</button></div>
+      `}
+      <div id="lerr" class="err"></div>
+    </div>
+  </div>`;
+  $('#tS').onclick=()=>renderLogin('student');$('#tT').onclick=()=>renderLogin('teacher');
+  if(tab==='student'){
+    const go=async()=>{
+      const name=$('#nm').value.trim().replace(/\s+/g,' '),cls=$('#cl').value.trim().toUpperCase();
+      if(name.length<2||!cls){$('#lerr').textContent='Please enter your full name and class.';return}
+      $('#goS').disabled=true;$('#goS').innerHTML='<span class="spin"></span> Signing in';
+      try{
+        const r=await API.call('login',{name,cls});
+        if(!r||!r.ok)throw new Error(r&&r.error||'Login failed');
+        S.user={studentId:r.studentId,name:r.name,cls:r.cls,ai:r.ai};S.role='student';
+        S.prog=LS.get(progKey(),{});LS.set('saf_session',{user:S.user});renderHome();
+      }catch(e){$('#lerr').textContent=e.message||String(e);$('#goS').disabled=false;$('#goS').textContent='Start learning'}
+    };
+    $('#goS').onclick=go;$('#cl').onkeydown=e=>{if(e.key==='Enter')go()};
+  }else{
+    const go=async()=>{
+      const pw=$('#pw').value;$('#goT').disabled=true;$('#goT').innerHTML='<span class="spin"></span> Checking';
+      try{const r=await API.call('teacherLogin',{password:pw});
+        if(!r||!r.ok)throw new Error('Incorrect password.');
+        S.role='teacher';S.pw=pw;renderDashboard();
+      }catch(e){$('#lerr').textContent=e.message||String(e);$('#goT').disabled=false;$('#goT').textContent='Open dashboard'}
+    };
+    $('#goT').onclick=go;$('#pw').onkeydown=e=>{if(e.key==='Enter')go()};
+  }
+}
+
+/* =====================================================================
+   HOME
+   ===================================================================== */
+function topicStats(k){
+  const p=S.prog[k];const T=TOPICS[k];if(!p)return {done:0,total:T.mcq.length+T.oe.length,score:0,max:topicMax(k),gen:false};
+  let done=0,score=0;
+  T.mcq.forEach(q=>{const s=p.mcq[q.id];if(s&&s.done){done++;score+=s.score}});
+  T.oe.forEach(q=>{const s=p.oe[q.id];if(s&&s.subs>0){done++;score+=s.best}});
+  return {done,total:T.mcq.length+T.oe.length,score,max:topicMax(k),gen:p.gen.submitted};
+}
+function renderHome(){
+  stopAnim();setChrome();$('#flownav').hidden=true;document.documentElement.style.setProperty('--accent','var(--brand)');
+  const first=S.user.name.split(' ')[0];
+  $('#app').innerHTML=`
+    <h1 style="margin-top:4px">Assalamualaikum, ${esc(first)}</h1>
+    <p class="muted">Choose a topic. Each one starts with a puzzle you try <b>before</b> any teaching. Struggling is part of learning here.</p>
+    <div class="grid g3" style="margin-top:16px">
+    ${TOPIC_KEYS.map(k=>{const T=TOPICS[k],st=topicStats(k);const pct=Math.round(st.done/st.total*100);
+      return `<div class="card tcard" style="--c:${T.color}">
+        <div style="font-size:32px">${T.icon}</div>
+        <h3>${T.name}</h3>
+        <div class="small muted">${T.ref} · PF puzzle, simulation, 7 MCQs, 5 open-ended</div>
+        <div class="small">${st.gen?'✓ Puzzle attempted':'○ Puzzle not attempted'} · ${st.done}/${st.total} questions · ${st.score}/${st.max} marks</div>
+        <div class="bar"><i style="width:${pct}%"></i></div>
+        <button class="btn" style="background:${T.color}" data-k="${k}">${st.gen?'Continue':'Start'}</button>
+      </div>`}).join('')}
+    </div>
+    <div class="note" style="margin-top:20px"><b>How marks work.</b> MCQ: 2 marks if correct on the first try, 1 mark on the second try. Open-ended: up to 3 marks, with one chance to revise after feedback. Hints never cost marks, but your teacher can see how many you used, so use them honestly when you are stuck.</div>`;
+  document.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>openTopic(b.dataset.k));
+}
+
+/* =====================================================================
+   FLOW
+   ===================================================================== */
+function buildPages(k){const T=TOPICS[k];return [{t:'gen',l:'Generate'},{t:'explore',l:'Explore'},{t:'consol',l:'Consolidate'},...T.mcq.map((q,i)=>({t:'mcq',i,l:'Q'+(i+1)})),...T.oe.map((q,i)=>({t:'oe',i,l:'E'+(i+1)})),{t:'summary',l:'Summary'}]}
+function openTopic(k){S.topic=k;S.pages=buildPages(k);const p=TP();S.idx=Math.min(p.idx||0,S.pages.length-1);document.documentElement.style.setProperty('--accent',TOPICS[k].color);renderFlow()}
+function canLeaveGen(){return TP().gen.submitted}
+function go(i){
+  if(i<0||i>=S.pages.length)return;
+  if(i>0&&!canLeaveGen()){alert('Productive Failure starts with YOUR ideas. Submit at least two ideas for the puzzle first.');return}
+  S.idx=i;TP().idx=i;saveProg();renderFlow();window.scrollTo({top:0,behavior:'smooth'});
+}
+function dotState(pg){
+  const p=TP();const T=TOPICS[S.topic];
+  if(pg.t==='gen')return p.gen.submitted?'done':'';
+  if(pg.t==='explore'||pg.t==='consol')return p.gen.submitted?'':'lock';
+  if(pg.t==='mcq'){const s=p.mcq[T.mcq[pg.i].id];if(!p.gen.submitted)return 'lock';return s&&s.done?'done':(s&&s.attempts?'part':'')}
+  if(pg.t==='oe'){const s=p.oe[T.oe[pg.i].id];if(!p.gen.submitted)return 'lock';return s&&s.done?'done':(s&&s.subs?'part':'')}
+  return p.gen.submitted?'':'lock';
+}
+function renderFlow(){
+  stopAnim();setChrome();
+  const T=TOPICS[S.topic],pg=S.pages[S.idx];
+  const dots=S.pages.map((x,i)=>`<button class="dot ${i===S.idx?'cur':''} ${dotState(x)}" data-i="${i}" title="${x.l}">${x.t==='gen'?'G':x.t==='explore'?'X':x.t==='consol'?'C':x.t==='summary'?'★':x.l}</button>`).join('');
+  $('#app').innerHTML=`<div class="stephead"><span style="font-size:26px">${T.icon}</span><h2>${T.name}</h2><span class="pill">${T.ref}</span></div>
+    <div class="dots">${dots}</div><div id="page"></div>`;
+  document.querySelectorAll('.dot').forEach(d=>d.onclick=()=>go(+d.dataset.i));
+  ({gen:pageGen,explore:pageExplore,consol:pageConsol,mcq:pageMCQ,oe:pageOE,summary:pageSummary})[pg.t](pg);
+  // nav
+  $('#flownav').hidden=false;
+  $('#prevBtn').disabled=S.idx===0;
+  const last=S.idx===S.pages.length-1;
+  $('#nextBtn').innerHTML=last?'Back to topics':'Next &rarr;';
+  $('#nextBtn').disabled=(pg.t==='gen'&&!canLeaveGen());
+  $('#navLabel').textContent=`Step ${S.idx+1} of ${S.pages.length} · ${phaseName(pg)}`;
+  $('#navProg').style.width=((S.idx+1)/S.pages.length*100)+'%';
+}
+function phaseName(pg){return {gen:'Generate (Productive Failure)',explore:'Explore',consol:'Consolidate',mcq:'MCQ '+(pg.i+1)+' of 7',oe:'Open-ended '+(pg.i+1)+' of 5',summary:'Summary'}[pg.t]}
+const refreshNav=()=>{const pg=S.pages[S.idx];$('#nextBtn').disabled=(pg.t==='gen'&&!canLeaveGen())};
+
+/* ---------- Generate ---------- */
+function pageGen(){
+  const T=TOPICS[S.topic],p=TP(),g=p.gen;
+  const ideasHTML=g.ideas.map((v,i)=>`<div class="idea"><span>${i+1}</span><textarea class="in gi" data-i="${i}" placeholder="Idea ${i+1}: describe your prediction, explanation, sketch-in-words or method">${esc(v)}</textarea></div>`).join('');
+  $('#page').innerHTML=`<div class="card">
+    <div class="phase">① Generate · Try before you are taught</div>
+    <h2 style="margin-top:6px">${T.gen.title}</h2>
+    <div class="scenario">${T.gen.scenario}</div>
+    <p>${T.gen.task}</p>
+    <div class="note">💡 In Productive Failure, the quality of your <b>attempts</b> matters more than being correct. Experts become experts by exploring many possible ideas first.</div>
+    <div id="ideas">${ideasHTML}</div>
+    <div class="row" style="margin-top:6px"><button id="addIdea" class="btn soft sm" ${g.ideas.length>=6?'disabled':''}>+ Add another idea</button></div>
+    <div class="conf"><b class="small">How confident are you in your best idea?</b>${['Sure','Not sure','Guessing'].map(c=>`<button data-c="${c}" class="${g.conf===c?'on':''}">${c}</button>`).join('')}</div>
+    <div class="row" style="margin-top:14px"><button id="subGen" class="btn">${g.submitted?'Update my ideas':'Submit my ideas'}</button><span id="genMsg" class="small muted"></span></div>
+    ${g.submitted?`<div class="okbox">✓ Ideas saved. Nothing here is marked right or wrong. Click <b>Next</b> to test your ideas in the simulation. You can come back and add ideas anytime.</div>`:''}
+  </div>`;
+  document.querySelectorAll('.gi').forEach(t=>t.oninput=()=>{g.ideas[+t.dataset.i]=t.value;saveProg()});
+  $('#addIdea').onclick=()=>{g.ideas.push('');saveProg();pageGen();refreshNav()};
+  document.querySelectorAll('.conf button').forEach(b=>b.onclick=()=>{g.conf=b.dataset.c;saveProg();pageGen()});
+  $('#subGen').onclick=()=>{
+    const filled=g.ideas.map(s=>s.trim()).filter(s=>s.length>=8);
+    if(filled.length<2){$('#genMsg').textContent='Write at least two different ideas (a sentence or more each).';return}
+    if(!g.conf){$('#genMsg').textContent='Choose how confident you are.';return}
+    g.submitted=true;saveProg();
+    record({Phase:'PF-Generate',QuestionId:S.topic.toUpperCase()+'-GEN',Response:filled.map((s,i)=>'Idea '+(i+1)+': '+s).join('\n'),Confidence:g.conf,MaxScore:0,Score:'',Attempts:filled.length,HintsUsed:0});
+    renderFlow();
+  };
+}
+
+/* ---------- Explore ---------- */
+function pageExplore(){
+  const T=TOPICS[S.topic],p=TP();
+  $('#page').innerHTML=`<div class="card">
+    <div class="phase">② Explore · Test your ideas</div>
+    <p>${T.explore.intro}</p>
+    <div id="simWrap"></div>
+    <h3 style="margin-top:18px">Investigate</h3>
+    <ol>${T.explore.probes.map(x=>`<li style="margin:6px 0">${x}</li>`).join('')}</ol>
+    <label class="f" for="exn">My observations (optional, saved for you and your teacher)</label>
+    <textarea id="exn" class="in" placeholder="What did you notice? Did anything surprise you or change your idea?">${esc(p.explore)}</textarea>
+    <div class="row" style="margin-top:10px"><button id="exs" class="btn soft sm">Save observations</button><span id="exm" class="small muted"></span></div>
+  </div>`;
+  $('#exn').oninput=e=>{p.explore=e.target.value;saveProg()};
+  $('#exs').onclick=()=>{if(p.explore.trim().length<5){$('#exm').textContent='Write a little first.';return}
+    record({Phase:'PF-Explore',QuestionId:S.topic.toUpperCase()+'-EXP',Response:p.explore,MaxScore:0});$('#exm').textContent='Saved ✓'};
+  ({thermal:simThermal,waves:simWaves,sound:simSound})[S.topic]();
+}
+
+/* ---------- Consolidate ---------- */
+function pageConsol(){
+  const T=TOPICS[S.topic],p=TP();
+  const mine=p.gen.ideas.filter(s=>s.trim()).map((s,i)=>`<li>${esc(s)}</li>`).join('')||'<li class="muted">No ideas yet</li>';
+  $('#page').innerHTML=`<div class="card">
+    <div class="phase">③ Consolidate · Make sense of the physics</div>
+    <div class="grid g2" style="margin-top:10px">
+      <div><h3>Your ideas from the puzzle</h3><ol class="small">${mine}</ol></div>
+      <div><h3>Key formulas &amp; rules</h3><p>${T.consol.formulas.map(f=>`<span class="formula">${f}</span>`).join(' &nbsp; ')}</p></div>
+    </div>
+    <h3 style="margin-top:12px">The physics ideas</h3>
+    <ol>${T.consol.key.map(x=>`<li style="margin:7px 0">${x}</li>`).join('')}</ol>
+    <h3 style="margin-top:16px">Common student ideas vs physics ideas</h3>
+    <p class="small muted">Many students (and scientists in history!) started with the ideas on the left. Did any of yours look similar?</p>
+    <div class="tablewrap" style="max-height:none"><table class="cmp"><thead><tr><th>Common idea</th><th>Physics idea</th></tr></thead><tbody>
+      ${T.consol.cmp.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</tbody></table></div>
+    <label class="f" for="rf">Reflect: Which of your ideas was closest? What would you change now, and why?</label>
+    <textarea id="rf" class="in" placeholder="e.g. My idea 2 was close because... I now think... because...">${esc(p.reflect)}</textarea>
+    <div class="row" style="margin-top:10px"><button id="rfs" class="btn soft sm">Save reflection</button><span id="rfm" class="small muted"></span></div>
+  </div>`;
+  $('#rf').oninput=e=>{p.reflect=e.target.value;saveProg()};
+  $('#rfs').onclick=()=>{if(p.reflect.trim().length<10){$('#rfm').textContent='Write a sentence or two.';return}
+    record({Phase:'PF-Reflect',QuestionId:S.topic.toUpperCase()+'-REF',Response:p.reflect,MaxScore:0});$('#rfm').textContent='Saved ✓'};
+}
+
+/* ---------- Hints (shared) ---------- */
+function hintBlock(st,hints){
+  const elapsed=(Date.now()-st.t0)/1000;
+  const unlocked=st.attempts>0||st.subs>0||elapsed>=HINT_UNLOCK_SEC;
+  const shown=hints.slice(0,st.hints).map((h,i)=>`<div class="hint"><b>Hint ${i+1} · ${['Nudge','Guiding question','Close step'][i]}</b><br>${h}</div>`).join('');
+  let btn='';
+  if(st.hints<hints.length){
+    btn=unlocked?`<button id="hintBtn" class="btn ghost sm">Show hint ${st.hints+1} of ${hints.length}</button>`
+      :`<button class="btn ghost sm" disabled id="hintBtn">Try first · hints unlock in <span id="hcd">${Math.ceil(HINT_UNLOCK_SEC-elapsed)}</span>s</button>`;
+  }
+  return `<div class="hints"><div class="row"><b class="small">Scaffolding hints</b>${btn}</div>${shown}</div>`;
+}
+function wireHints(st,rerender){
+  const b=$('#hintBtn');if(b&&!b.disabled)b.onclick=()=>{st.hints++;saveProg();rerender()};
+  if(b&&b.disabled){tick=setInterval(()=>{const left=Math.ceil(HINT_UNLOCK_SEC-(Date.now()-st.t0)/1000);if(left<=0){clearInterval(tick);tick=null;rerender()}else{const c=$('#hcd');if(c)c.textContent=left}},1000)}
+}
+
+/* ---------- MCQ ---------- */
+function pageMCQ(pg){
+  if(tick){clearInterval(tick);tick=null}
+  const q=TOPICS[S.topic].mcq[pg.i],st=mcqState(q);
+  const L='ABCD';
+  const opts=q.o.map((o,i)=>{
+    let cls='';if(st.tried.includes(i)&&i!==q.a)cls='wrong';
+    if(st.done&&i===q.a)cls='right';else if(!st.done&&st.sel===i)cls='sel';
+    const dis=st.done||st.tried.includes(i);
+    return `<button class="opt ${cls}" data-o="${i}" ${dis?'disabled':''}><b>${L[i]}</b><span>${esc(o)}</span></button>`}).join('');
+  let fb='';
+  if(st.done&&st.correct)fb=`<div class="okbox"><b>✓ Correct${st.attempts===1?' on the first try':' on the second try'} (+${st.score}).</b> ${esc(q.ex)}</div>`;
+  else if(st.done)fb=`<div class="badbox"><b>Not this time.</b> ${esc(q.mis[st.tried[st.tried.length-1]]||'')}<br><br><b>Answer: ${L[q.a]}.</b> ${esc(q.ex)}</div>`;
+  else if(st.attempts===1)fb=`<div class="badbox"><b>Not quite. Think again:</b> ${esc(q.mis[st.tried[0]]||'')}<br><span class="small">Hints are unlocked. You have one more try.</span></div>`;
+  $('#page').innerHTML=`<div class="card">
+    <div class="row" style="justify-content:space-between"><span class="pill">MCQ ${pg.i+1} of 7 · ${q.id}</span><span class="small muted">2 marks first try · 1 mark second try</span></div>
+    <div class="stem">${esc(q.s)}</div>
+    <div class="opts">${opts}</div>
+    ${st.done?'':`<div class="conf"><b class="small">How sure are you?</b>${['Sure','Not sure','Guessing'].map(c=>`<button data-c="${c}" class="${st.conf===c?'on':''}">${c}</button>`).join('')}</div>
+    <div class="row" style="margin-top:12px"><button id="chk" class="btn">Check answer</button><span id="qm" class="small muted"></span></div>`}
+    ${fb}
+    ${st.done?'':hintBlock(st,q.h)}
+  </div>`;
+  const rr=()=>pageMCQ(pg);
+  document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{st.sel=+b.dataset.o;saveProg();rr()});
+  document.querySelectorAll('.conf button').forEach(b=>b.onclick=()=>{st.conf=b.dataset.c;saveProg();rr()});
+  const c=$('#chk');if(c)c.onclick=()=>{
+    if(st.sel===null||st.tried.includes(st.sel)){$('#qm').textContent='Choose an answer first.';return}
+    if(!st.conf){$('#qm').textContent='Tell us how sure you are.';return}
+    st.attempts++;const ok=st.sel===q.a;
+    if(ok){st.correct=true;st.done=true;st.score=st.attempts===1?2:1}
+    else{st.tried.push(st.sel);if(st.attempts>=2){st.done=true;st.score=0}}
+    const chosen=st.sel;
+    record({Phase:'MCQ',QuestionId:q.id,Response:L[chosen]+'. '+q.o[chosen],Correct:ok,Score:ok?st.score:0,MaxScore:2,Attempts:st.attempts,HintsUsed:st.hints,Confidence:st.conf,
+      Misconception:ok?'':(q.tag[chosen]||''),Feedback:ok?q.ex:(q.mis[chosen]||''),FeedbackSource:'bank',TimeSpentSec:Math.round((Date.now()-st.t0)/1000)});
+    st.sel=null;saveProg();renderFlow();
+  };
+  if(!st.done)wireHints(st,rr);
+}
+
+/* ---------- Open-ended ---------- */
+function pageOE(pg){
+  if(tick){clearInterval(tick);tick=null}
+  const q=TOPICS[S.topic].oe[pg.i],st=oeState(q);
+  const canSubmit=!st.done;
+  $('#page').innerHTML=`<div class="card">
+    <div class="row" style="justify-content:space-between"><span class="pill">Open-ended ${pg.i+1} of 5 · ${q.id}</span><span class="small muted">Up to 3 marks · 1 revision allowed</span></div>
+    <div class="stem">${esc(q.s)}</div>
+    <textarea id="oeT" class="in" style="min-height:150px" ${st.done?'readonly':''} placeholder="Explain in full sentences. Use physics words. Show working for calculations.">${esc(st.text)}</textarea>
+    ${canSubmit?`<div class="conf"><b class="small">How sure are you?</b>${['Sure','Not sure','Guessing'].map(c=>`<button data-c="${c}" class="${st.conf===c?'on':''}">${c}</button>`).join('')}</div>
+    <div class="row" style="margin-top:12px"><button id="oeS" class="btn">${st.subs?'Resubmit revised answer':'Submit answer'}</button><span id="oem" class="small muted"></span></div>`:''}
+    ${st.feedback?`<div class="${st.best>=MAX_OE?'okbox':'infobox'}"><b>${st.source==='ai'?'🤖 AI tutor':'📋 Rubric'} feedback · best score ${st.best}/${MAX_OE}</b><br>${esc(st.feedback)}
+      ${!st.done?'<br><span class="small">Revise your answer above using this feedback, then resubmit. You have one revision.</span>':''}</div>`:''}
+    ${st.subs>0?`<div class="row" style="margin-top:12px"><button id="oeM" class="btn ghost sm">${st.showModel?'Hide':'Compare with'} model answer</button></div>`:''}
+    ${st.showModel?`<div class="okbox"><b>Model answer</b><br>${esc(q.model)}<br><br><span class="small"><b>Key ideas markers look for:</b> ${q.rubric.map(r=>esc(r.idea)).join(' · ')}</span></div>`:''}
+    ${st.done?'':hintBlock(st,q.h)}
+  </div>`;
+  const rr=()=>pageOE(pg);
+  const ta=$('#oeT');ta.oninput=()=>{st.text=ta.value;saveProg()};
+  document.querySelectorAll('.conf button').forEach(b=>b.onclick=()=>{st.conf=b.dataset.c;saveProg();rr()});
+  const m=$('#oeM');if(m)m.onclick=()=>{if(!st.done&&!st.showModel&&!confirm('Viewing the model answer ends your chance to revise. Continue?'))return;st.showModel=!st.showModel;if(st.showModel)st.done=true;saveProg();renderFlow()};
+  const s=$('#oeS');if(s)s.onclick=async()=>{
+    const ans=st.text.trim();
+    if(ans.length<15){$('#oem').textContent='Write a fuller answer (at least one complete sentence).';return}
+    if(!st.conf){$('#oem').textContent='Tell us how sure you are.';return}
+    s.disabled=true;s.innerHTML='<span class="spin"></span> Checking your ideas';
+    let r;const payload={qid:q.id,stem:q.s,rubric:q.rubric.map(x=>({idea:x.idea,kw:x.kw,probe:x.probe})),model:q.model,answer:ans,max:MAX_OE};
+    try{r=await API.call('grade',payload);if(!r||!r.ok)throw 0}catch(e){r=keywordGrade(payload)}
+    st.subs++;st.best=Math.max(st.best,r.score);st.feedback=r.feedback;st.source=r.source;
+    if(st.best>=MAX_OE||st.subs>=2)st.done=true;
+    record({Phase:'OE',QuestionId:q.id,Response:ans,Correct:r.score>=MAX_OE,Score:r.score,MaxScore:MAX_OE,Attempts:st.subs,HintsUsed:st.hints,Confidence:st.conf,
+      Misconception:r.misconception||'',Feedback:r.feedback,FeedbackSource:r.source,TimeSpentSec:Math.round((Date.now()-st.t0)/1000)});
+    saveProg();renderFlow();
+  };
+  if(!st.done)wireHints(st,rr);
+}
+
+/* ---------- Summary ---------- */
+function pageSummary(){
+  const T=TOPICS[S.topic],p=TP(),st=topicStats(S.topic);
+  const L='ABCD';
+  const rows=[...T.mcq.map((q,i)=>{const s=p.mcq[q.id];return `<tr><td>MCQ ${i+1}</td><td>${esc(q.s.slice(0,70))}…</td><td>${!s||!s.done?'<span class="muted">Not done</span>':s.correct?'✓ '+(s.attempts===1?'1st try':'2nd try'):'✗ (ans '+L[q.a]+')'}</td><td>${s?s.score:0}/2</td><td>${s?s.hints:0}</td><td>${s?esc(s.conf):''}</td></tr>`}),
+    ...T.oe.map((q,i)=>{const s=p.oe[q.id];return `<tr><td>Open ${i+1}</td><td>${esc(q.s.slice(0,70))}…</td><td>${!s||!s.subs?'<span class="muted">Not done</span>':s.subs+' submission(s)'}</td><td>${s?s.best:0}/3</td><td>${s?s.hints:0}</td><td>${s?esc(s.conf):''}</td></tr>`})].join('');
+  const sureWrong=T.mcq.filter(q=>{const s=p.mcq[q.id];return s&&s.done&&!s.correct&&s.conf==='Sure'}).length;
+  const pct=Math.round(st.score/st.max*100);
+  $('#page').innerHTML=`<div class="card">
+    <div class="phase">④ Summary</div>
+    <div class="kpis"><div class="kpi"><b>${st.score}/${st.max}</b><span>Total marks (${pct}%)</span></div>
+      <div class="kpi"><b>${st.done}/${st.total}</b><span>Questions attempted</span></div>
+      <div class="kpi"><b>${[...Object.values(p.mcq),...Object.values(p.oe)].reduce((a,s)=>a+(s.hints||0),0)}</b><span>Hints used</span></div>
+      <div class="kpi"><b>${sureWrong}</b><span>"Sure" but wrong (worth revisiting)</span></div></div>
+    <div class="tablewrap"><table><thead><tr><th>Item</th><th>Question</th><th>Result</th><th>Marks</th><th>Hints</th><th>Confidence</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <label class="f" for="fr">Muhasabah (self-reflection): Which idea do you still feel unsure about, and what will you do about it?</label>
+    <textarea id="fr" class="in">${esc(p.finalReflect)}</textarea>
+    <div class="row" style="margin-top:10px"><button id="frs" class="btn soft sm">Save reflection</button><span id="frm" class="small muted"></span></div>
+  </div>`;
+  $('#fr').oninput=e=>{p.finalReflect=e.target.value;saveProg()};
+  $('#frs').onclick=()=>{if(p.finalReflect.trim().length<5){$('#frm').textContent='Write a little first.';return}
+    record({Phase:'Reflect-Final',QuestionId:S.topic.toUpperCase()+'-FIN',Response:p.finalReflect,MaxScore:0,Score:st.score});$('#frm').textContent='Saved ✓'};
+}
+
+/* =====================================================================
+   SIMULATIONS
+   ===================================================================== */
+function fitCanvas(cv){const r=cv.getBoundingClientRect(),d=window.devicePixelRatio||1;cv.width=Math.round(r.width*d);cv.height=Math.round(r.height*d);const ctx=cv.getContext('2d');ctx.setTransform(d,0,0,d,0,0);return {ctx,w:r.width,h:r.height}}
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()||'#333'}
+function arrow(ctx,x1,y1,x2,y2,col,lw){ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=lw||2;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();const a=Math.atan2(y2-y1,x2-x1);ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-9*Math.cos(a-0.45),y2-9*Math.sin(a-0.45));ctx.lineTo(x2-9*Math.cos(a+0.45),y2-9*Math.sin(a+0.45));ctx.closePath();ctx.fill()}
+function tempColor(T){const t=Math.max(0,Math.min(1,(T+5)/100));const r=Math.round(40+215*t),g=Math.round(110-40*Math.abs(t-.5)*2+20),b=Math.round(235-205*t);return `rgb(${r},${g},${b})`}
+
+function simThermal(){
+  $('#simWrap').innerHTML=`<canvas id="cv" class="sim"></canvas>
+  <div class="controls">
+    <div><label>Drink starting temperature: <span id="v0">80</span> °C</label><input id="r0" type="range" min="-5" max="95" value="80"></div>
+    <div><label>Room temperature: <span id="vr">30</span> °C</label><input id="rr" type="range" min="20" max="35" value="30"></div>
+    <div><label>Cup material</label><select id="mat" class="in"><option value="0.012">Styrofoam (insulator)</option><option value="0.03" selected>Ceramic</option><option value="0.07">Metal (good conductor)</option></select></div>
+    <div class="row" style="align-items:flex-end"><button id="play" class="btn sm">▶ Play</button><button id="rst" class="btn ghost sm">Reset</button></div>
+  </div><div class="readout" id="ro"></div>`;
+  const cv=$('#cv');let {ctx,w,h}=fitCanvas(cv);
+  const st={T0:80,Tr:30,k:0.03,t:0,run:false};
+  const Tat=t=>st.Tr+(st.T0-st.Tr)*Math.exp(-st.k*t);
+  const reset=()=>{st.t=0;st.run=false;$('#play').textContent='▶ Play'};
+  $('#r0').oninput=e=>{st.T0=+e.target.value;$('#v0').textContent=st.T0;reset()};
+  $('#rr').oninput=e=>{st.Tr=+e.target.value;$('#vr').textContent=st.Tr;reset()};
+  $('#mat').onchange=e=>{st.k=+e.target.value;reset()};
+  $('#play').onclick=()=>{if(st.t>=240)st.t=0;st.run=!st.run;$('#play').textContent=st.run?'⏸ Pause':'▶ Play'};
+  $('#rst').onclick=reset;
+  window.onresize=()=>{({ctx,w,h}=fitCanvas(cv))};
+  const draw=()=>{
+    if(st.run){st.t=Math.min(240,st.t+0.6);if(st.t>=240){st.run=false;$('#play').textContent='▶ Play'}}
+    ctx.clearRect(0,0,w,h);
+    const gw=Math.max(200,w*0.66),L=46,R=gw,Tp=18,B=h-34;
+    const xs=t=>L+(t/240)*(R-L), ys=T=>B-((T+10)/110)*(B-Tp);
+    ctx.strokeStyle='#cfc8b4';ctx.lineWidth=1;ctx.fillStyle='#7a857f';ctx.font='11px Plus Jakarta Sans';
+    for(let T=0;T<=100;T+=20){ctx.beginPath();ctx.moveTo(L,ys(T));ctx.lineTo(R,ys(T));ctx.stroke();ctx.fillText(T+'°',L-28,ys(T)+4)}
+    ctx.fillText('Time (min) →',R-70,h-12);ctx.save();ctx.translate(12,h/2+30);ctx.rotate(-Math.PI/2);ctx.fillText('Temperature (°C)',0,0);ctx.restore();
+    for(let t=0;t<=240;t+=60)ctx.fillText(t,xs(t)-6,B+14);
+    ctx.setLineDash([6,5]);ctx.strokeStyle='#0f5b4a';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(L,ys(st.Tr));ctx.lineTo(R,ys(st.Tr));ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='#0f5b4a';ctx.fillText('room '+st.Tr+'°C',R-62,ys(st.Tr)-6);
+    ctx.strokeStyle=css('--thermal');ctx.lineWidth=3;ctx.beginPath();for(let t=0;t<=st.t;t+=0.6){const x=xs(t),y=ys(Tat(t));t===0?ctx.moveTo(x,y):ctx.lineTo(x,y)}ctx.stroke();
+    const Tn=Tat(st.t);ctx.fillStyle=css('--thermal');ctx.beginPath();ctx.arc(xs(st.t),ys(Tn),5,0,7);ctx.fill();
+    // cup
+    const cx=gw+(w-gw)/2,cy=h/2+10,cw=Math.min(70,(w-gw)*0.4),ch=cw*1.2;
+    const diff=Tn-st.Tr;
+    ctx.fillStyle=tempColor(Tn);ctx.strokeStyle='#5b5b5b';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(cx-cw/2,cy-ch/2);ctx.lineTo(cx-cw/2*0.8,cy+ch/2);ctx.lineTo(cx+cw/2*0.8,cy+ch/2);ctx.lineTo(cx+cw/2,cy-ch/2);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.fillStyle='#fff';ctx.font='bold 14px Plus Jakarta Sans';ctx.textAlign='center';ctx.fillText(Tn.toFixed(1)+'°C',cx,cy+5);
+    const mag=Math.min(1,Math.abs(diff)/50);ctx.textAlign='left';
+    if(Math.abs(diff)>0.3){
+      const out=diff>0,col=out?'#c2410c':'#0e7490',len=10+mag*28;
+      for(let i=0;i<6;i++){const a=i/6*Math.PI*2+0.3,r1=cw*0.95,r2=r1+len;
+        const p1=[cx+Math.cos(a)*r1,cy+Math.sin(a)*r1],p2=[cx+Math.cos(a)*r2,cy+Math.sin(a)*r2];
+        out?arrow(ctx,p1[0],p1[1],p2[0],p2[1],col,2+mag*2):arrow(ctx,p2[0],p2[1],p1[0],p1[1],col,2+mag*2)}
+      ctx.fillStyle=col;ctx.font='bold 12px Plus Jakarta Sans';ctx.textAlign='center';ctx.fillText(out?'Energy OUT of drink':'Energy INTO drink',cx,Tp+6);
+    }else{ctx.fillStyle='#15803d';ctx.font='bold 12px Plus Jakarta Sans';ctx.textAlign='center';ctx.fillText('Thermal equilibrium',cx,Tp+6);ctx.fillText('no net transfer',cx,Tp+22)}
+    ctx.textAlign='left';
+    $('#ro').innerHTML=`<span>Time: <b>${st.t.toFixed(0)} min</b></span><span>Drink: <b>${Tn.toFixed(1)} °C</b></span><span>Difference from room: <b>${diff.toFixed(1)} °C</b></span>`;
+    anim=requestAnimationFrame(draw);
+  };draw();
+}
+
+function simWaves(){
+  $('#simWrap').innerHTML=`<canvas id="cv" class="sim"></canvas>
+  <div class="controls">
+    <div><label>Frequency f: <span id="vf">1.0</span> Hz</label><input id="rf2" type="range" min="0.5" max="3" step="0.25" value="1"></div>
+    <div><label>Amplitude: <span id="va">0.30</span> m</label><input id="ra" type="range" min="0.1" max="0.5" step="0.05" value="0.3"></div>
+    <div><label>Medium</label><select id="med" class="in"><option value="2">Light rope (v = 2.0 m/s)</option><option value="1">Heavy rope (v = 1.0 m/s)</option></select></div>
+    <div class="row" style="align-items:flex-end"><button id="frz" class="btn sm">⏸ Freeze</button></div>
+  </div><div class="readout" id="ro"></div>`;
+  const cv=$('#cv');let {ctx,w,h}=fitCanvas(cv);
+  const st={f:1,A:0.3,v:2,t:0,run:true,last:performance.now()};
+  $('#rf2').oninput=e=>{st.f=+e.target.value;$('#vf').textContent=st.f.toFixed(2)};
+  $('#ra').oninput=e=>{st.A=+e.target.value;$('#va').textContent=st.A.toFixed(2)};
+  $('#med').onchange=e=>{st.v=+e.target.value};
+  $('#frz').onclick=()=>{st.run=!st.run;$('#frz').textContent=st.run?'⏸ Freeze':'▶ Resume'};
+  window.onresize=()=>{({ctx,w,h}=fitCanvas(cv))};
+  const draw=(now)=>{
+    const dt=Math.min(0.05,((now||performance.now())-st.last)/1000);st.last=now||performance.now();if(st.run)st.t+=dt;
+    ctx.clearRect(0,0,w,h);
+    const L=60,R=w-16,M=h/2,sx=(R-L)/6,sy=(h*0.38)/0.5,lam=st.v/st.f;
+    const X=x=>L+x*sx,Y=y=>M-y*sy,disp=x=>st.A*Math.sin(2*Math.PI*(x/lam-st.f*st.t));
+    ctx.setLineDash([5,5]);ctx.strokeStyle='#bdb59f';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(L,M);ctx.lineTo(R,M);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='#7a857f';ctx.font='11px Plus Jakarta Sans';for(let x=0;x<=6;x++){ctx.fillText(x+' m',X(x)-8,h-8)}
+    // generator
+    const gy=Y(disp(0));ctx.fillStyle='#555';ctx.fillRect(10,M-30,28,60);ctx.fillStyle='#888';ctx.fillRect(38,gy-4,L-38,8);
+    // rope
+    ctx.strokeStyle='#a0763c';ctx.lineWidth=5;ctx.lineCap='round';ctx.beginPath();for(let px=L;px<=R;px+=2){const x=(px-L)/sx,y=Y(disp(x));px===L?ctx.moveTo(px,y):ctx.lineTo(px,y)}ctx.stroke();
+    // wavelength bracket
+    const phase=st.f*st.t;let x1=lam*(0.25+phase);x1=x1-Math.floor(x1/lam)*lam;if(x1<0.2)x1+=lam;
+    if(x1+lam<=6){const yb=Y(st.A)-14;ctx.strokeStyle='#0e7490';ctx.lineWidth=2;arrow(ctx,X(x1)+(X(x1+lam)-X(x1))/2,yb,X(x1)+2,yb,'#0e7490',2);arrow(ctx,X(x1)+(X(x1+lam)-X(x1))/2,yb,X(x1+lam)-2,yb,'#0e7490',2);
+      ctx.fillStyle='#0e7490';ctx.font='bold 13px Plus Jakarta Sans';ctx.textAlign='center';ctx.fillText('λ = '+lam.toFixed(2)+' m',(X(x1)+X(x1+lam))/2,yb-8);ctx.textAlign='left'}
+    // amplitude marker
+    ctx.strokeStyle='#7c3aed';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(R-8,M);ctx.lineTo(R-8,Y(st.A));ctx.stroke();ctx.fillStyle='#7c3aed';ctx.fillText('A',R-22,(M+Y(st.A))/2+4);
+    // bead
+    const bx=1.5;ctx.strokeStyle='rgba(185,28,28,.3)';ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(X(bx),Y(st.A)-4);ctx.lineTo(X(bx),Y(-st.A)+4);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='#b91c1c';ctx.beginPath();ctx.arc(X(bx),Y(disp(bx)),8,0,7);ctx.fill();
+    arrow(ctx,X(5)-30,22,X(5)+30,22,'#0e7490',2.5);ctx.fillStyle='#0e7490';ctx.font='12px Plus Jakarta Sans';ctx.fillText('direction of wave',X(5)-48,14);
+    $('#ro').innerHTML=`<span>f = <b>${st.f.toFixed(2)} Hz</b></span><span>T = 1/f = <b>${(1/st.f).toFixed(2)} s</b></span><span>v = <b>${st.v.toFixed(1)} m/s</b> (set by rope)</span><span>λ = v/f = <b>${lam.toFixed(2)} m</b></span><span>A = <b>${st.A.toFixed(2)} m</b></span>`;
+    anim=requestAnimationFrame(draw);
+  };draw();
+}
+
+function simSound(){
+  $('#simWrap').innerHTML=`<canvas id="cv" class="sim" style="height:360px"></canvas>
+  <div class="controls">
+    <div><label>Frequency (slowed down): <span id="vf">1.0</span></label><input id="rf2" type="range" min="0.5" max="2.5" step="0.25" value="1"></div>
+    <div><label>Amplitude (loudness): <span id="va">8</span></label><input id="ra" type="range" min="2" max="14" step="1" value="8"></div>
+    <div><label><input id="vac" type="checkbox"> Remove air (vacuum)</label></div>
+    <div class="row" style="align-items:flex-end"><button id="frz" class="btn sm">⏸ Freeze</button></div>
+  </div><div class="readout" id="ro"></div>`;
+  const cv=$('#cv');let {ctx,w,h}=fitCanvas(cv);
+  const st={f:1,A:8,vac:false,t:0,run:true,last:performance.now()};
+  $('#rf2').oninput=e=>{st.f=+e.target.value;$('#vf').textContent=st.f.toFixed(2)};
+  $('#ra').oninput=e=>{st.A=+e.target.value;$('#va').textContent=st.A};
+  $('#vac').onchange=e=>{st.vac=e.target.checked};
+  $('#frz').onclick=()=>{st.run=!st.run;$('#frz').textContent=st.run?'⏸ Freeze':'▶ Resume'};
+  window.onresize=()=>{({ctx,w,h}=fitCanvas(cv))};
+  const rnd=[];for(let i=0;i<600;i++)rnd.push(Math.sin(i*12.9898)*43758.5453%1);
+  const draw=(now)=>{
+    const dt=Math.min(0.05,((now||performance.now())-st.last)/1000);st.last=now||performance.now();if(st.run)st.t+=dt;
+    ctx.clearRect(0,0,w,h);
+    const top=20,boxH=h*0.58,L=80,R=w-60,cols=Math.max(24,Math.floor((R-L)/11)),rows=9,sx=(R-L)/cols,vpx=130,lam=vpx/st.f;
+    const s=x0=>st.A*Math.sin(2*Math.PI*((x0-L)/lam-st.f*st.t));
+    // speaker
+    const cone=s(L)*0.9;ctx.fillStyle='#333';ctx.fillRect(18,top+boxH/2-40,26,80);ctx.fillStyle='#666';
+    ctx.beginPath();ctx.moveTo(44,top+boxH/2-22);ctx.lineTo(58+cone,top+boxH/2-46);ctx.lineTo(58+cone,top+boxH/2+46);ctx.lineTo(44,top+boxH/2+22);ctx.closePath();ctx.fill();
+    // ear
+    ctx.font='34px serif';ctx.fillText('👂',w-50,top+boxH/2+12);
+    if(st.vac){
+      ctx.fillStyle='#7a857f';ctx.font='bold 15px Plus Jakarta Sans';ctx.textAlign='center';ctx.fillText('VACUUM: no particles to pass on the vibration',(L+R)/2,top+boxH/2);ctx.fillText('The speaker still vibrates, but no sound reaches the ear',(L+R)/2,top+boxH/2+22);ctx.textAlign='left';
+      ctx.strokeStyle='#b91c1c';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(w-52,top+boxH/2-18);ctx.lineTo(w-14,top+boxH/2+18);ctx.stroke();
+    }else{
+      for(let c=0;c<cols;c++){const x0=L+c*sx+sx/2,dx=s(x0);
+        for(let r=0;r<rows;r++){const j=rnd[(c*rows+r)%600];const y=top+12+r*(boxH-24)/(rows-1)+(j-0.5)*6;
+          ctx.fillStyle=(c===Math.floor(cols/3))?'#b91c1c':'#7c3aed';ctx.globalAlpha=(c===Math.floor(cols/3))?1:0.75;
+          ctx.beginPath();ctx.arc(x0+dx,y,3.2,0,7);ctx.fill()}}
+      ctx.globalAlpha=1;
+      const rc=L+Math.floor(cols/3)*sx+sx/2;ctx.strokeStyle='rgba(185,28,28,.35)';ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(rc-st.A,top+boxH+2);ctx.lineTo(rc+st.A,top+boxH+2);ctx.stroke();ctx.setLineDash([]);
+    }
+    arrow(ctx,(L+R)/2-40,top+boxH+14,(L+R)/2+40,top+boxH+14,'#0e7490',2.5);ctx.fillStyle='#0e7490';ctx.font='12px Plus Jakarta Sans';ctx.fillText('wave travels →',(L+R)/2+50,top+boxH+18);
+    // pressure graph
+    const gT=top+boxH+30,gB=h-14,gM=(gT+gB)/2,gA=(gB-gT)/2-4;
+    ctx.strokeStyle='#cfc8b4';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(L,gM);ctx.lineTo(R,gM);ctx.stroke();
+    ctx.fillStyle='#7a857f';ctx.font='11px Plus Jakarta Sans';ctx.fillText('pressure',8,gM-4);ctx.fillText('vs position',8,gM+10);
+    if(!st.vac){ctx.strokeStyle='#7c3aed';ctx.lineWidth=2.5;ctx.beginPath();
+      for(let x=L;x<=R;x+=2){const p=-Math.cos(2*Math.PI*((x-L)/lam-st.f*st.t))*(st.A/14);const y=gM-p*gA;x===L?ctx.moveTo(x,y):ctx.lineTo(x,y)}ctx.stroke();
+      // label first C and R
+      const ph=st.f*st.t;let xc=L+lam*(0.5+ph);while(xc>L+lam)xc-=lam;while(xc<L)xc+=lam;
+      ctx.fillStyle='#15803d';ctx.font='bold 12px Plus Jakarta Sans';ctx.fillText('C',xc-4,gT+2);ctx.fillStyle='#c2410c';const xr=xc+lam/2<R?xc+lam/2:xc-lam/2;ctx.fillText('R',xr-4,gB+2);}
+    $('#ro').innerHTML=`<span><b style="color:#15803d">C</b> = compression (crowded, higher pressure)</span><span><b style="color:#c2410c">R</b> = rarefaction (spread out, lower pressure)</span><span>Red particles vibrate about one place</span>${st.vac?'<span><b>🔇 No sound reaches the ear</b></span>':''}`;
+    anim=requestAnimationFrame(draw);
+  };draw();
+}
+
+/* =====================================================================
+   TEACHER DASHBOARD
+   ===================================================================== */
+const isTrue=v=>v===true||String(v).toUpperCase()==='TRUE';
+async function renderDashboard(){
+  stopAnim();setChrome();$('#flownav').hidden=true;document.documentElement.style.setProperty('--accent','var(--brand)');
+  $('#app').innerHTML=`<div class="card"><span class="spin"></span> Loading class data…</div>`;
+  try{const r=await API.call('dashboard',{password:S.pw});if(!r||!r.ok)throw new Error(r&&r.error||'Could not load data');S.dash=r;drawDash()}
+  catch(e){$('#app').innerHTML=`<div class="card"><div class="err">${esc(e.message||e)}</div><button class="btn" onclick="renderDashboard()">Try again</button></div>`}
+}
+function filteredRecs(){
+  const d=S.dash;return (d.responses||[]).filter(r=>(S.dclass==='all'||r.Class===S.dclass)&&(S.dtopic==='all'||r.Topic===S.dtopic));
+}
+function aggregate(){
+  const recs=filteredRecs();const best={},students={};
+  (S.dash.students||[]).forEach(s=>{if(S.dclass==='all'||s.Class===S.dclass)students[s.StudentId]={id:s.StudentId,name:s.Name,cls:s.Class,last:s.LastLogin,logins:s.Logins}});
+  recs.forEach(r=>{
+    const sid=r.StudentId;if(!students[sid])students[sid]={id:sid,name:r.Name,cls:r.Class,last:r.Timestamp,logins:''};
+    if(String(r.Timestamp)>String(students[sid].last||''))students[sid].last=r.Timestamp;
+    if(r.Phase!=='MCQ'&&r.Phase!=='OE')return;
+    const k=sid+'|'+r.QuestionId;const b=best[k]||(best[k]={sid,qid:r.QuestionId,topic:r.Topic,phase:r.Phase,score:0,max:+r.MaxScore||0,hints:0,first:null,sureWrong:0,subs:0});
+    b.score=Math.max(b.score,+r.Score||0);b.hints=Math.max(b.hints,+r.HintsUsed||0);b.subs++;
+    if(+r.Attempts===1&&b.first===null)b.first=isTrue(r.Correct);
+    if(r.Phase==='MCQ'&&r.Confidence==='Sure'&&!isTrue(r.Correct))b.sureWrong++;
+  });
+  const topics=S.dtopic==='all'?TOPIC_KEYS:[S.dtopic];
+  Object.values(students).forEach(s=>{s.t={};s.hints=0;s.sureWrong=0;s.answered=0;topics.forEach(k=>s.t[k]={score:0,n:0});});
+  Object.values(best).forEach(b=>{const s=students[b.sid];if(!s||!s.t[b.topic])return;s.t[b.topic].score+=b.score;s.t[b.topic].n++;s.hints+=b.hints;s.sureWrong+=b.sureWrong;s.answered++});
+  const qs={};Object.values(best).forEach(b=>{const q=qs[b.qid]||(qs[b.qid]={n:0,score:0,max:0,first:0,firstN:0,hints:0});q.n++;q.score+=b.score;q.max+=b.max||(b.phase==='MCQ'?2:3);q.hints+=b.hints;if(b.first!==null){q.firstN++;if(b.first)q.first++}});
+  const mis={};recs.forEach(r=>{if(r.Misconception){const k=r.QuestionId+'||'+r.Misconception;mis[k]=(mis[k]||0)+1}});
+  return {recs,best,students:Object.values(students).sort((a,b)=>String(a.cls).localeCompare(b.cls)||String(a.name).localeCompare(b.name)),qs,mis,topics};
+}
+const pctCls=p=>p==null?'':p<50?'lo':p<75?'mid':'hi';
+function drawDash(){
+  const A=aggregate(),d=S.dash;
+  const classes=[...new Set([...(d.students||[]).map(s=>s.Class),...(d.responses||[]).map(r=>r.Class)].filter(Boolean))].sort();
+  const allBest=Object.values(A.best);
+  const tot=allBest.reduce((a,b)=>a+b.score,0),mx=allBest.reduce((a,b)=>a+(b.max||(b.phase==='MCQ'?2:3)),0);
+  const mcqB=allBest.filter(b=>b.phase==='MCQ'&&b.first!==null);
+  const firstAcc=mcqB.length?Math.round(mcqB.filter(b=>b.first).length/mcqB.length*100):null;
+  const avgH=allBest.length?(allBest.reduce((a,b)=>a+b.hints,0)/allBest.length).toFixed(1):'0';
+  const sureWrong=allBest.reduce((a,b)=>a+b.sureWrong,0);
+  const pfCount=A.recs.filter(r=>r.Phase==='PF-Generate').length;
+  $('#app').innerHTML=`
+  <div class="row" style="justify-content:space-between"><div><h1 style="margin:0">Teacher Dashboard</h1><div class="muted small">Sec 2 Physics · Thermal, Waves &amp; Sound · ${MODE==='preview'?'Preview data (this browser)':'Live data from Google Sheets'}${d.ai?' · AI feedback ON':' · Rubric feedback'}</div></div>
+    <div class="row"><select id="fc" class="in" style="width:auto"><option value="all">All classes</option>${classes.map(c=>`<option ${S.dclass===c?'selected':''}>${esc(c)}</option>`).join('')}</select>
+    <select id="ft" class="in" style="width:auto"><option value="all">All topics</option>${TOPIC_KEYS.map(k=>`<option value="${k}" ${S.dtopic===k?'selected':''}>${TOPICS[k].short}</option>`).join('')}</select>
+    <button id="rf" class="btn soft sm">↻ Refresh</button><button id="csv" class="btn ghost sm">Export CSV</button>${d.sheetUrl?`<a class="btn ghost sm" style="text-decoration:none" target="_blank" href="${esc(d.sheetUrl)}">Open Sheet</a>`:''}</div></div>
+  <div class="kpis">
+    <div class="kpi"><b>${A.students.length}</b><span>Students</span></div>
+    <div class="kpi"><b class="${pctCls(mx?tot/mx*100:null)}">${mx?Math.round(tot/mx*100)+'%':'–'}</b><span>Average score on attempted items</span></div>
+    <div class="kpi"><b class="${pctCls(firstAcc)}">${firstAcc==null?'–':firstAcc+'%'}</b><span>MCQ correct on first try</span></div>
+    <div class="kpi"><b>${avgH}</b><span>Hints per question</span></div>
+    <div class="kpi"><b class="${sureWrong?'lo':''}">${sureWrong}</b><span>"Sure" but wrong (overconfidence)</span></div>
+    <div class="kpi"><b>${pfCount}</b><span>PF puzzle submissions</span></div>
+  </div>
+  <div class="dtabs">${[['overview','Students'],['questions','Question analysis'],['mis','Misconceptions'],['pf','PF ideas gallery'],['log','Response log']].map(([k,l])=>`<button data-t="${k}" class="${S.dtab===k?'on':''}">${l}</button>`).join('')}</div>
+  <div id="dbody"></div>`;
+  $('#fc').onchange=e=>{S.dclass=e.target.value;drawDash()};
+  $('#ft').onchange=e=>{S.dtopic=e.target.value;drawDash()};
+  $('#rf').onclick=renderDashboard;$('#csv').onclick=()=>exportCSV(A.recs);
+  document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{S.dtab=b.dataset.t;drawDash()});
+  ({overview:dStudents,questions:dQuestions,mis:dMis,pf:dPF,log:dLog})[S.dtab](A);
+}
+function dStudents(A){
+  if(!A.students.length){$('#dbody').innerHTML='<div class="card muted">No students yet for this filter.</div>';return}
+  const head=A.topics.map(k=>`<th>${TOPICS[k].short} %</th>`).join('');
+  const rows=A.students.map(s=>{
+    const cells=A.topics.map(k=>{const t=s.t[k];const p=t.n?Math.round(t.score/topicMax(k)*100):null;return `<td class="pct ${pctCls(p)}">${p==null?'<span class="muted">–</span>':p+'%'}<div class="small muted">${t.n}/12 items</div></td>`}).join('');
+    return `<tr><td><b>${esc(s.name)}</b><div class="small muted">${esc(s.cls)}</div></td>${cells}<td>${s.hints}</td><td class="${s.sureWrong?'lo':''}">${s.sureWrong}</td><td class="small">${fmtDate(s.last)}</td><td><button class="btn soft sm" data-s="${esc(s.id)}">View</button></td></tr>`}).join('');
+  $('#dbody').innerHTML=`<div class="card"><p class="small muted" style="margin-top:0">Percent = marks earned ÷ full topic marks (29). Items = questions attempted out of 12. "Sure but wrong" flags confident misconceptions worth a conversation.</p>
+    <div class="tablewrap"><table><thead><tr><th>Student</th>${head}<th>Hints</th><th>Sure but wrong</th><th>Last active</th><th></th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+  document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>studentModal(b.dataset.s,A));
+}
+function dQuestions(A){
+  const topics=A.topics;
+  $('#dbody').innerHTML=topics.map(k=>{const T=TOPICS[k];
+    const rows=[...T.mcq,...T.oe].map(q=>{const s=A.qs[q.id];const p=s&&s.max?Math.round(s.score/s.max*100):null;const f=s&&s.firstN?Math.round(s.first/s.firstN*100):null;const col=p==null?'#ddd':p<50?'#b42318':p<75?'#d97706':'#15803d';
+      return `<div class="qbar" title="${esc(q.s)}"><b>${q.id}</b><div><div class="track"><i style="width:${p||0}%;background:${col}"></i></div><div class="small muted" style="margin-top:3px">${esc(q.s.slice(0,90))}${q.s.length>90?'…':''}</div></div><span class="pct ${pctCls(p)}">${p==null?'–':p+'%'}</span><span class="small">${f==null?'':f+'% 1st'}</span><span class="small hcol">${s?(s.hints/s.n).toFixed(1)+' hints':''}</span></div>`}).join('');
+    return `<div class="card" style="margin-bottom:14px;border-top:5px solid ${T.color}"><h3 style="color:${T.color}">${T.icon} ${T.name}</h3><div class="small muted">Bar = average score · 1st = MCQ first-try accuracy · hints = average hints per student. Red bars are good candidates for re-teaching.</div>${rows}</div>`}).join('');
+}
+function dMis(A){
+  const list=Object.entries(A.mis).map(([k,n])=>{const [qid,label]=k.split('||');return {qid,label,n}}).sort((a,b)=>b.n-a.n);
+  $('#dbody').innerHTML=`<div class="card"><p class="small muted" style="margin-top:0">Each wrong MCQ option is linked to a known misconception; AI feedback may also label open-ended misconceptions. Use the top ones to plan your next consolidation discussion.</p>
+    ${list.length?`<div class="tablewrap"><table><thead><tr><th>Count</th><th>Misconception</th><th>Question</th></tr></thead><tbody>${list.map(m=>`<tr><td><b>${m.n}</b></td><td>${esc(m.label)}</td><td><span class="tag">${esc(m.qid)}</span> <span class="small muted">${esc(QINDEX[m.qid]?QINDEX[m.qid].q.s.slice(0,80):'')}</span></td></tr>`).join('')}</tbody></table></div>`:'<p class="muted">No misconceptions recorded yet.</p>'}</div>`;
+}
+function dPF(A){
+  const latest={};A.recs.filter(r=>r.Phase==='PF-Generate'||r.Phase==='PF-Reflect').forEach(r=>{latest[r.StudentId+'|'+r.Topic+'|'+r.Phase]=r});
+  const items=Object.values(latest);
+  $('#dbody').innerHTML=(S.dtopic==='all'?TOPIC_KEYS:[S.dtopic]).map(k=>{
+    const gens=items.filter(r=>r.Topic===k&&r.Phase==='PF-Generate');
+    return `<div class="card" style="margin-bottom:14px;border-top:5px solid ${TOPICS[k].color}"><h3 style="color:${TOPICS[k].color}">${TOPICS[k].icon} ${TOPICS[k].gen.title} <span class="pill">${gens.length} submissions</span></h3>
+      <p class="small muted">PF teacher move: pick 2–3 contrasting student ideas below and build the consolidation discussion around them (compare, critique, then assemble the canonical idea).</p>
+      <div class="grid g2">${gens.map(r=>{const ref=items.find(x=>x.StudentId===r.StudentId&&x.Topic===k&&x.Phase==='PF-Reflect');
+        return `<div class="ideacard"><b>${esc(r.Name)}</b> <span class="tag">${esc(r.Class)}</span> <span class="tag">${esc(r.Confidence)}</span><pre>${esc(r.Response)}</pre>${ref?`<div class="small" style="margin-top:8px;color:var(--brand)"><b>Reflection:</b> ${esc(ref.Response)}</div>`:''}</div>`}).join('')||'<p class="muted">No submissions yet.</p>'}</div></div>`}).join('');
+}
+function dLog(A){
+  const rows=A.recs.slice(-300).reverse();
+  $('#dbody').innerHTML=`<div class="card"><p class="small muted" style="margin-top:0">Most recent 300 entries for this filter.</p><div class="tablewrap"><table><thead><tr><th>Time</th><th>Student</th><th>Topic</th><th>Phase</th><th>Q</th><th>Response</th><th>Score</th><th>Hints</th><th>Conf.</th></tr></thead><tbody>
+  ${rows.map(r=>`<tr><td class="small">${fmtDate(r.Timestamp)}</td><td>${esc(r.Name)}<div class="small muted">${esc(r.Class)}</div></td><td>${esc(TOPICS[r.Topic]?TOPICS[r.Topic].short:r.Topic)}</td><td>${esc(r.Phase)}</td><td>${esc(r.QuestionId)}</td><td class="small" style="max-width:340px">${esc(String(r.Response).slice(0,220))}</td><td>${r.MaxScore?esc(r.Score)+'/'+esc(r.MaxScore):''}</td><td>${esc(r.HintsUsed)}</td><td>${esc(r.Confidence)}</td></tr>`).join('')}
+  </tbody></table></div></div>`;
+}
+function studentModal(sid,A){
+  const recs=A.recs.filter(r=>r.StudentId===sid);const s=A.students.find(x=>x.id===sid)||{};
+  const byQ={};recs.forEach(r=>{(byQ[r.QuestionId]=byQ[r.QuestionId]||[]).push(r)});
+  const blocks=Object.keys(byQ).map(qid=>{const list=byQ[qid];const q=QINDEX[qid];
+    return `<div style="border-bottom:1px solid var(--line);padding:10px 0"><div class="row"><span class="tag">${esc(qid)}</span><b class="small">${esc(list[0].Phase)}</b>${q?`<span class="small muted">${esc(q.q.s.slice(0,110))}</span>`:''}</div>
+      ${list.map(r=>`<div class="small" style="margin:6px 0 0 6px">• <b>Attempt ${esc(r.Attempts)}</b>${r.MaxScore?` · ${esc(r.Score)}/${esc(r.MaxScore)}`:''} · hints ${esc(r.HintsUsed)} · ${esc(r.Confidence)}${r.Misconception?` · <span style="color:var(--bad)">${esc(r.Misconception)}</span>`:''}<div style="white-space:pre-wrap;background:#faf8f2;border-radius:8px;padding:6px 10px;margin-top:4px">${esc(r.Response)}</div>${r.Feedback&&r.Phase==='OE'?`<div class="muted" style="margin-top:3px">Feedback (${esc(r.FeedbackSource)}): ${esc(r.Feedback)}</div>`:''}</div>`).join('')}</div>`}).join('');
+  $('#modalRoot').innerHTML=`<div class="modal" id="mdl"><div class="card"><div class="row" style="justify-content:space-between"><div><h2 style="margin:0">${esc(s.name||sid)}</h2><div class="muted small">${esc(s.cls||'')} · ${recs.length} entries</div></div><button class="btn sm" id="mc">Close</button></div>${blocks||'<p class="muted">No responses yet.</p>'}</div></div>`;
+  $('#mc').onclick=()=>$('#modalRoot').innerHTML='';$('#mdl').onclick=e=>{if(e.target.id==='mdl')$('#modalRoot').innerHTML=''};
+}
+function exportCSV(recs){
+  const H=['Timestamp','StudentId','Name','Class','Topic','Phase','QuestionId','Response','Correct','Score','MaxScore','Attempts','HintsUsed','Confidence','Misconception','Feedback','FeedbackSource','TimeSpentSec'];
+  const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
+  const csv=[H.join(','),...recs.map(r=>H.map(h=>q(r[h])).join(','))].join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv'}));a.download='scaffoldai_physics_responses.csv';a.click();
+}
+function fmtDate(v){if(!v)return '';const d=new Date(v);return isNaN(d)?esc(v):d.toLocaleString('en-SG',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}
+
+/* =====================================================================
+   BOOT
+   ===================================================================== */
+(function boot(){
+  const sess=LS.get('saf_session',null);
+  if(sess&&sess.user){S.user=sess.user;S.role='student';S.prog=LS.get(progKey(),{});renderHome()}
+  else renderLogin();
+})();
+</script>
+</body>
+</html>
